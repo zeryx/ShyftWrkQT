@@ -3,9 +3,9 @@
  * Author: Julien Wintz
  * Created: Thu Feb 13 20:59:40 2014 (+0100)
  * Version:
- * Last-Updated: Thu Feb 13 23:57:44 2014 (+0100)
+ * Last-Updated: jeu. mars  6 12:55:14 2014 (+0100)
  *           By: Julien Wintz
- *     Update #: 68
+ *     Update #: 69
  */
 
 /* Change Log:
@@ -69,6 +69,14 @@ Canvas {
       }
 
       chart.draw(chartAnimationProgress/100);
+  }
+
+  onHeightChanged: {
+    requestPaint();
+  }
+
+  onWidthChanged: {
+    requestPaint();
   }
 
   onChartAnimationProgressChanged: {

@@ -5,7 +5,7 @@
 // Version:
 // Last-Updated:
 //           By:
-//     Update #: 92
+//     Update #: 94
 //
 
 // Change Log:
@@ -24,8 +24,6 @@ var ChartType = {
 var Chart = function(canvas, context) {
 
     var chart = this;
-    var width = context.canvas.width;
-    var height = context.canvas.height;
 
 // /////////////////////////////////////////////////////////////////
 // Polar area helper
@@ -826,6 +824,8 @@ var Chart = function(canvas, context) {
         // /////////////////////////////////////////////////////////////////
 
         this.draw = function (progress) {
+
+            this.init();
 
             clear(ctx);
 
