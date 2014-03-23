@@ -12,7 +12,7 @@
  *
  */
 
-import QtQuick 2.2
+import QtQuick 2.0
 
 import "QChart.js" as Charts
 
@@ -39,22 +39,22 @@ Canvas {
 
           switch(chartType) {
           case Charts.ChartType.BAR:
-              chart = new Charts.Chart(this, this.getContext("2d")).Bar(chartData);
+              chart = new Charts.Chart(canvas, canvas.getContext("2d")).Bar(chartData);
               break;
           case Charts.ChartType.DOUGHNUT:
-              chart = new Charts.Chart(this, this.getContext("2d")).Doughnut(chartData);
+              chart = new Charts.Chart(canvas, canvas.getContext("2d")).Doughnut(chartData);
               break;
           case Charts.ChartType.LINE:
-              chart = new Charts.Chart(this, this.getContext("2d")).Line(chartData);
+              chart = new Charts.Chart(canvas, canvas.getContext("2d")).Line(chartData);
               break;
           case Charts.ChartType.PIE:
-              chart = new Charts.Chart(this, this.getContext("2d")).Pie(chartData);
+              chart = new Charts.Chart(canvas, canvas.getContext("2d")).Pie(chartData);
               break;
           case Charts.ChartType.POLAR:
-              chart = new Charts.Chart(this, this.getContext("2d")).PolarArea(chartData);
+              chart = new Charts.Chart(canvas, canvas.getContext("2d")).PolarArea(chartData);
               break;
           case Charts.ChartType.RADAR:
-              chart = new Charts.Chart(this, this.getContext("2d")).Radar(chartData);
+              chart = new Charts.Chart(canvas, canvas.getContext("2d")).Radar(chartData);
               break;
           default:
               console.log('Chart type should be specified.');
