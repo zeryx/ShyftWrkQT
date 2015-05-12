@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>EmployeePicker.qml</file>
+    </qresource>
+</RCC>
