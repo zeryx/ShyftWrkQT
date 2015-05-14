@@ -1,36 +1,19 @@
-import QtQuick 2.2
-import QtQuick.Controls 1.1
+import QtQuick 2.0
 
-ApplicationWindow {
-    visible: true
-    width: 800
-    height: 600
-    title: qsTr("ShyftWrk")
-    menuBar: MenuBar {
-        Menu {
-            title: qsTr("Day")
-            MenuItem {
-                text: qsTr("Monday")
-                onTriggered: dstring= days[0]
-                }
-            MenuItem {
-                text: qsTr("Tuesday")
-                onTriggered: dstring= days[1]
-                }
-        }
-    }
+Rectangle{
+    //In this window there are two major functions, the day spinner and the employee portrait table.
     property variant days: [qsTr("Monday"), qsTr("Tuesday"),
         qsTr("Wednesday"), qsTr("Thursday"), qsTr("Friday"), qsTr("Saturday"), qsTr("Sunday")]
     property string dstring: "Monday"
     property int ditr: 0
-
     Item{
+        //create the size of the day spinner to be the full width, with the height equal to the buttons
         width: parent.width
         height:backDay.width
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.topMargin: 5
             spacing: 2
+            // the colors and widths will be replaced with style sheet
             Rectangle {
                 id: backDay
                 color: "grey"
@@ -59,7 +42,7 @@ ApplicationWindow {
             Rectangle {
                 id: selectedDay
                 color: "blue"
-                width: 150; height: 75
+                width: 120; height: 75
                 Text {
                     id: sDayButton
                     anchors.centerIn: parent
@@ -100,5 +83,4 @@ ApplicationWindow {
 
         }
     }
-
 }

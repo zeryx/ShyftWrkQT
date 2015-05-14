@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>EmployeePicker.qml</file>
+        <file>main.qml</file>
+        <file>ShiftScheduler.qml</file>
+        <file>EmployeeEditor.qml</file>
     </qresource>
 </RCC>
