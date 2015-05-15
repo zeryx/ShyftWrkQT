@@ -28,11 +28,13 @@ ApplicationWindow {
     ObjectModel{
         id: menuListModel
         ShiftScheduler {
+            id:myShiftScheduler
             width: menuListView.width
             anchors.top: parent.top
             anchors.topMargin: 100
         }
         EmployeeEditor{
+            id:myEmployeeEditor
             width: menuListView.width
             anchors.top: parent.top
             anchors.topMargin: 100

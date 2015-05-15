@@ -52,10 +52,6 @@ Rectangle{
                 id: sDayButtonMouseArea
                 //anchor all sides of the mouse area to fill the rectangle
                 anchors.fill: parent
-                onClicked: employeeRowModel.append({
-                                                         "name": days[ditr],
-                                                         "score":"help"
-                                                     })
             }
         }
 
@@ -85,41 +81,14 @@ Rectangle{
         }
 
     }
+
+
+
+
     ListModel{
-        id:employeeRowModel
+        id:myPersonnelPositionsRowModel
     }
-
-    Row{
-        anchors.top: daySpinner.bottom
-        anchors.horizontalCenter: daySpinner.horizontalCenter
-        anchors.topMargin: 10
-        spacing: 5
-        Repeater{
-            anchors.top: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            Component{
-                id:rowDelegate
-                Rectangle{
-                    width:150; height: 50
-                    Text{text: name; anchors.horizontalCenter: parent.horizontalCenter; id: nametest}
-                    Text{ text: score; anchors.horizontalCenter: parent.horizontalCenter; anchors.top: nametest.bottom}
-                }
-            }
-            model: employeeRowModel
-            delegate: rowDelegate
-            focus: true
-//            Repeater{
-//                anchors.top: parent.bottom
-//                Component{
-//                    id: columnDelegate
-//                    Rectangle{
-//                        width: 150; height: 50
-//                        Text{text:
-//                    }
-//                }
-//            }
-
-        }
+    ListModel{
+        id:myEmployeeColumnModel
     }
 }
