@@ -1,7 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
+        <file>ShyftWrk.qml</file>
         <file>ShiftScheduler.qml</file>
         <file>EmployeeEditor.qml</file>
+        <file>assets/sampleportrait.jpg</file>
     </qresource>
 </RCC>

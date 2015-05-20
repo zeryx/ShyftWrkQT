@@ -1,26 +1,32 @@
 #include <QApplication>
-#include "personneldata.h"
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QQmlComponent>
 #include "qimage.h"
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    QQmlContext *context = new QQmlContext(engine.rootContext());
-    QImage *samplePortrait = new QImage();
-    samplePortrait->load("portrait.jpg", NULL);
 
-    QList<QObject*> dataList;
-    dataList.append(new personnelData(*samplePortrait, "James Sutton", float(std::rand()/std::rand())));
-    dataList.append(new personnelData(*samplePortrait, "James Sutton", float(std::rand()/std::rand())));
-    context->setContextProperty("personnelModel", &dataList);
-    QQmlComponent component(&engine);
-    component.setData("");
+    // replace the functions below with actual arrays, they are just for testing
+//    std::vector<personnelData> personnelVector(10);
+//    QUrl jimmyPortrait = QStringLiteral("qrc:///portrait.jpg");
+//    QString jimmyName = "James Sutton";
+//    qreal jimmyScore = 4.6;
+//    personnelVector[0].setPortrait(jimmyPortrait);
+//    personnelVector[0].setName(jimmyName);
+//    personnelVector[0].setScore(jimmyScore);
 
-    engine.load(QUrl(QStringLiteral("qrc:///main.qml")));
 
+    //    QList<QObject*> dataList;
+    //    for(unsigned int perItr=0; perItr < personnelVector.size(); perItr++)
+    //    {
+    //        dataList.append(QObject(personnelVector[perItr]));
+    //   }
+
+    //    engine.rootContext()->setContextProperty("personnelModel", QVariant::fromValue(dataList));
+        engine.load(QUrl(QStringLiteral("qrc:///ShyftWrk.qml")));
 
     return app.exec();
 }

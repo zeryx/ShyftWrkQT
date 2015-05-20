@@ -79,16 +79,14 @@ Rectangle{
                 }
             }
         }
-
     }
-
-
-
-
-    ListModel{
-        id:myPersonnelPositionsRowModel
-    }
-    ListModel{
-        id:myEmployeeColumnModel
+    Image{
+        anchors.top: daySpinner.bottom
+        anchors.horizontalCenter: daySpinner.horizontalCenter
+        source: "assets/sampleportrait.jpg"
+        asynchronous: true
+        smooth: true
+        width: 100; height: 200
+        fillMode: Image.PreserveAspectFit
     }
 }

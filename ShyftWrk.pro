@@ -15,3 +15,5 @@ include(deployment.pri)
 
 HEADERS += \
     personneldata.h
+
+DISTFILES +=
