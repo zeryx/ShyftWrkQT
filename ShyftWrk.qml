@@ -8,26 +8,9 @@ ApplicationWindow {
     visible: true
     width: Screen.width - 35
     height: Screen.height - 35
+    color:"#ffffff"
 
-//    title: qsTr("ShyftWrk")
-//    menuBar : MenuBar{
-//        Menu{
-//            title: qsTr("File")
-//            MenuItem{
-//                text: qsTr("Import")
-//            }
-//            MenuItem{
-//                text: qsTr("Export")
-//            }
-//            MenuItem{
-//                text: qsTr("Save")
-//            }
-//            MenuItem{
-//                text: qsTr("Exit")
-//                onTriggered: Qt.quit()
-//            }
-//        }
-//    }
+   title: qsTr("ShyftWrk")
 
     Rectangle{
         id: banner
@@ -71,13 +54,12 @@ ApplicationWindow {
 
         Tab{
             id: shiftSchedulerTab
-            title: "Shift Scheduler"
+            title: "Shift Scheduling"
             ShiftScheduler {
                 id:myShiftScheduler
                 width: mainTabView.width
                 anchors.top: parent.top
                 anchors.topMargin: 10
-                color: "transparent"
             }
         }
         Tab{
@@ -88,13 +70,24 @@ ApplicationWindow {
                 width: mainTabView.width
                 anchors.top: parent.top
                 anchors.topMargin: 20
-                color: "transparent"
 
             }
         }
+        Tab{
+            id: employeeViewTab
+            title: "Employee Viewer"
+            EmployeeViewer{
+                id:myEmployeeViewer
+                width: mainTabView.width
+                anchors.top: parent.top
+                anchors.topMargin: 20
+            }
+        }
+
         style: TabViewStyle{
             frameOverlap: 1
             tab: Rectangle{
+                id: tab
                 color:"#000000"
                 border.color: styleData.hovered ? "#5caa15" : "grey"
                 implicitWidth: Math.max(text.width+4, 40)

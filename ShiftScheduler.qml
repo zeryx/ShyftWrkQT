@@ -1,7 +1,7 @@
 import QtQuick 2.0
 
 Rectangle{
-    //In this window there are two major functions, the day spinner and the employee portrait table.
+    id: root
     property variant days: [qsTr("Monday"), qsTr("Tuesday"),
         qsTr("Wednesday"), qsTr("Thursday"), qsTr("Friday"), qsTr("Saturday"), qsTr("Sunday")]
     property string dstring: "Monday"
@@ -13,10 +13,9 @@ Rectangle{
         anchors.horizontalCenter: parent.horizontalCenter
         height: backDay.height
         spacing: 2
-        // the colors and widths will be replaced with style sheet
         Rectangle {
             id: backDay
-            color: "grey"
+            color: "green"
             width: bDayButton.contentWidth+2; height: 75
             Text {
                 id: bDayButton
@@ -41,7 +40,7 @@ Rectangle{
 
         Rectangle {
             id: selectedDay
-            color: "blue"
+            color: "grey"
             width: 120; height: 75
             Text {
                 id: sDayButton
@@ -58,7 +57,7 @@ Rectangle{
 
         Rectangle {
             id: forwardDay
-            color: "grey"
+            color: "green"
             width: fDayButton.contentWidth+2; height: 75
             Text {
                 id: fDayButton
@@ -80,13 +79,5 @@ Rectangle{
             }
         }
     }
-    Image{
-        anchors.top: daySpinner.bottom
-        anchors.horizontalCenter: daySpinner.horizontalCenter
-        source: "assets/sampleportrait.jpg"
-        asynchronous: true
-        smooth: true
-        width: 100; height: 200
-        fillMode: Image.PreserveAspectFit
-    }
+// put listViews here, dynamically created components depending on the number & titles associated
 }

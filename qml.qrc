@@ -3,6 +3,6 @@
         <file>ShyftWrk.qml</file>
         <file>ShiftScheduler.qml</file>
         <file>EmployeeEditor.qml</file>
-        <file>assets/sampleportrait.jpg</file>
+        <file>EmployeeViewer.qml</file>
     </qresource>
 </RCC>
