@@ -1,5 +1,5 @@
 import QtQuick 2.0
-
+import "assets" as MyAssets
 Rectangle{
     id: root
     property variant days: [qsTr("Monday"), qsTr("Tuesday"),
@@ -8,32 +8,20 @@ Rectangle{
     property int ditr: 0
     //create the size of the day spinner to be the full width, with the height equal to the buttons
     width: parent.width
+
     Row {
         id:daySpinner
         anchors.horizontalCenter: parent.horizontalCenter
-        height: backDay.height
+        height: selectedDay.height
         spacing: 2
-        Rectangle {
-            id: backDay
-            color: "green"
-            width: bDayButton.contentWidth+2; height: 75
-            Text {
-                id: bDayButton
-                anchors.centerIn: parent
-                text: qsTr("back")
-            }
-            MouseArea{
-                id: bDayButtonMouseArea
-                anchors.fill: parent
-                onClicked: {
-
-                    ditr--
-                    if(ditr<0)
-                    {
-                        ditr=6
-                    }
-                    dstring = days[ditr]
-                }
+        MyAssets.DayButtons{
+            source:"assets/icons/arrow_left.svg"
+            height: selectedDay.height
+            onClicked: {
+                ditr--
+                if(ditr<0)
+                    ditr=6;
+                dstring = days[ditr];
             }
         }
 
@@ -41,7 +29,8 @@ Rectangle{
         Rectangle {
             id: selectedDay
             color: "grey"
-            width: 120; height: 75
+            width: 200; height: 75
+            radius: 5
             Text {
                 id: sDayButton
                 anchors.centerIn: parent
@@ -55,27 +44,17 @@ Rectangle{
         }
 
 
-        Rectangle {
-            id: forwardDay
-            color: "green"
-            width: fDayButton.contentWidth+2; height: 75
-            Text {
-                id: fDayButton
-                anchors.centerIn: parent
-                text: qsTr("forward")
-            }
-            MouseArea{
-                id: fDayButtonMouseArea
-                anchors.fill: parent
-                onClicked: {
+        MyAssets.DayButtons{
+            source:"assets/icons/arrow_right.svg"
+            height: selectedDay.height
+            onClicked: {
 
-                    ditr++
-                    if(ditr>6)
-                    {
-                        ditr=0
-                    }
-                    dstring = days[ditr]
+                ditr++
+                if(ditr>6)
+                {
+                    ditr=0
                 }
+                dstring = days[ditr]
             }
         }
     }

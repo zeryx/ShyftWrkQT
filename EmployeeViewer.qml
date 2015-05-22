@@ -1,7 +1,6 @@
 import QtQuick 2.0
-
+import "assets" as MyAssets
 Rectangle {
-    width: 100
-    height: 62
+    anchors.fill: parent
 }
 

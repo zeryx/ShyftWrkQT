@@ -3,21 +3,25 @@ import QtQml.Models 2.1
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
 import QtQuick.Window 2.0
+import "assets" as MyAssets
 import "."
-ApplicationWindow {
+ApplicationWindow{
+    id: root
     visible: true
-    width: Screen.width - 35
-    height: Screen.height - 35
-    color:"#ffffff"
-
+    width: Screen.width - 150
+    height: Screen.height - 150
+    minimumWidth: 480
+    minimumHeight: 480
+    color:themePrimary
+    property color themeSecondary: Qt.darker("grey")
+    property color themePrimary: "white"
    title: qsTr("ShyftWrk")
-
     Rectangle{
         id: banner
         height: 80
         anchors.top: parent.top
         width: parent.width
-        color: "#000000"
+        color: themeSecondary
         Text{
             id: bannerTextLayout
             anchors.horizontalCenter: banner.horizontalCenter
@@ -45,11 +49,18 @@ ApplicationWindow {
             }
         }
     }
-
+    ScrollableEmployeeColumn{
+        id: employeeColumn
+        width: 200
+        height: parent.height-banner.height
+        anchors.right: parent.right
+        anchors.top: banner.bottom
+    }
     TabView{
         id: mainTabView
         anchors.top: banner.bottom
-        width: parent.width
+        anchors.right: employeeColumn.left
+        anchors.left: banner.left
         anchors.bottom: parent.bottom
 
         Tab{
@@ -59,7 +70,8 @@ ApplicationWindow {
                 id:myShiftScheduler
                 width: mainTabView.width
                 anchors.top: parent.top
-                anchors.topMargin: 10
+                anchors.topMargin: 20
+                color: themePrimary
             }
         }
         Tab{
@@ -70,7 +82,7 @@ ApplicationWindow {
                 width: mainTabView.width
                 anchors.top: parent.top
                 anchors.topMargin: 20
-
+                color: themePrimary
             }
         }
         Tab{
@@ -88,7 +100,7 @@ ApplicationWindow {
             frameOverlap: 1
             tab: Rectangle{
                 id: tab
-                color:"#000000"
+                color:themeSecondary
                 border.color: styleData.hovered ? "#5caa15" : "grey"
                 implicitWidth: Math.max(text.width+4, 40)
                 implicitHeight: 20
@@ -102,8 +114,8 @@ ApplicationWindow {
                     font.family: "abel"
                 }
             }
-            frame: Rectangle{ color: "#ffffff"}
-            tabBar: Rectangle{ color: "#ffffff"}
+            frame: Rectangle{ color: themePrimary}
+            tabBar: Rectangle{ color: themePrimary}
         }
     }
 }
