@@ -4,18 +4,36 @@ import "assets" as MyAssets
 Column{
     id: rootColumn
     spacing: 2
+    signal removeInst;
     MyAssets.Search{
         id: columnSearch
         width: parent.width
         height: 25
-        property int increment;
-        property string check: "";
-//        onHasText: {
-//            for(increment =0; artificalModel.get(increment)<=artificalModel.count; increment++){
-//                check = searchText;
-//                if(check != artificalModel.get(incriment))
-//            }
-//        }
+        property int incrementIndex;
+        property int incrementString;
+        property int ind: 0
+        property int searchTextSize;
+        property int visibleItr;
+        property bool called;
+        //when search has text, check all model data to see if the names match, if they don't, remove from view
+        onHasText: {
+            for(incrementIndex =0; incrementIndex < artificalModel.count; incrementIndex++){
+                searchTextSize = searchText.length
+                console.log("current item: " + artificalModel.get(incrementIndex).fruitName + " index #"+incrementIndex)
+                for(incrementString=0; incrementString <= searchTextSize; incrementString++)
+                {
+                    console.log("search letter: " + searchText.charAt(incrementString))
+                    console.log("model letter: "+ artificalModel.get(incrementIndex).fruitName.charAt(incrementString))
+
+                    if(searchText.charAt(incrementString) !== artificalModel.get(incrementIndex).fruitName.charAt(incrementString) && searchText.charAt(incrementString) !== "")
+                    {
+                        artificalModel.get(incrementIndex).visibleItem = false;
+                        break;
+                    }
+                }
+            }
+        }
+            // need a way to mask listModels based on visibleItem bool, will figure out later
     }
     ScrollView{
         id: myScrollView
@@ -25,47 +43,45 @@ Column{
             id: artificalListView
             model: artificalModel
             delegate: artificalDelegate
+            addDisplaced: Transition{
+                NumberAnimation{ properties: "x,y"; duration: 500;}
+            }
         }
     }
+
+
     ListModel{
         id: artificalModel
         ListElement{
-            name: "apple"
-            colour: "red"
+            fruitName: "apple"
+            fruitColor: "red"
+            visibleItem: true
         }
         ListElement{
-            name: "banana"
-            colour: "yellow"
+            fruitName: "banana"
+            fruitColor: "yellow"
+            visibleItem: true
         }
         ListElement{
-            name: "carrot"
-            colour: "orange"
+            fruitName: "apricot"
+            fruitColor: "orange"
+            visibleItem: true
         }
         ListElement{
-            name: "duran"
-            colour: "brown"
+            fruitName: "duran"
+            fruitColor: "brown"
+            visibleItem: true
         }
         ListElement{
-            name: "apple"
-            colour: "red"
-        }
-        ListElement{
-            name: "banana"
-            colour: "yellow"
-        }
-        ListElement{
-            name: "carrot"
-            colour: "orange"
-        }
-        ListElement{
-            name: "duran"
-            colour: "brown"
-        }
-        ListElement{
-            name: "apple"
-            colour: "red"
+            fruitName: "apple"
+            fruitColor: "red"
+            visibleItem: true
         }
     }
+    ListModel{
+        id: temporaryModel
+    }
+
     Component{
         id: artificalDelegate
         Rectangle{
@@ -73,9 +89,10 @@ Column{
             height: 75
             Text{
                 anchors.fill: parent
-                text: name
+                text: fruitName
             }
-            color: colour
+            property bool visibleItem;
+            color: fruitColor
         }
     }
 }

@@ -5,6 +5,7 @@ FocusScope {
     id: root
     signal hasText
     property alias searchText: textInput.text
+    property string oldText: ""
     BorderImage {
         id: searchBorder
         source: "searchbox.jpg"
@@ -36,8 +37,11 @@ FocusScope {
         activeFocusOnPress: false
         z:1
         onTextChanged: {
-            if(textInput.text != "")
-                    root.hasText();
+            if(textInput.text !== oldText)
+            {
+                root.hasText();
+                oldText = textInput.text
+            }
         }
 
         MouseArea{
@@ -56,7 +60,7 @@ FocusScope {
     Image{
         id: clear
         anchors{right: parent.right; rightMargin: 8; verticalCenter:  parent.verticalCenter;}
-        source: "icons/arrow_left.svg"
+        source: ""
         opacity: 0
         MouseArea{
             anchors.fill: parent
