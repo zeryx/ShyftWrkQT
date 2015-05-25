@@ -4,36 +4,36 @@ import "assets" as MyAssets
 Column{
     id: rootColumn
     spacing: 2
-    signal removeInst;
     MyAssets.Search{
         id: columnSearch
         width: parent.width
         height: 25
-        property int incrementIndex;
-        property int incrementString;
-        property int ind: 0
+        property int incrIndex;
         property int searchTextSize;
-        property int visibleItr;
-        property bool called;
+        property int incrStr;
         //when search has text, check all model data to see if the names match, if they don't, remove from view
         onHasText: {
-            for(incrementIndex =0; incrementIndex < artificalModel.count; incrementIndex++){
-                searchTextSize = searchText.length
-                console.log("current item: " + artificalModel.get(incrementIndex).fruitName + " index #"+incrementIndex)
-                for(incrementString=0; incrementString <= searchTextSize; incrementString++)
-                {
-                    console.log("search letter: " + searchText.charAt(incrementString))
-                    console.log("model letter: "+ artificalModel.get(incrementIndex).fruitName.charAt(incrementString))
+//            searchTextSize = searchText.length-1
+//            for(incrIndex =0; incrIndex < columnModel.count; incrIndex++){
 
-                    if(searchText.charAt(incrementString) !== artificalModel.get(incrementIndex).fruitName.charAt(incrementString) && searchText.charAt(incrementString) !== "")
-                    {
-                        artificalModel.get(incrementIndex).visibleItem = false;
-                        break;
-                    }
-                }
-            }
+//                for(incrStr=0; incrStr<=searchTextSize; incrStr++)
+//                {
+
+//                    if(searchText.charAt(incrStr) !== columnModel.get(incrIndex).fruitName.charAt(incrStr))
+//                    {
+//                        columnModel.get(incrIndex).visibleItem = false;
+//                        break;
+//                    }
+//                    //but if they do, make sure its visible
+//                    else{
+//                        columnModel.get(incrIndex).visibleItem = true;
+//                    }
+//                }
+//                //if the textbox is empty, everything should be visible (not sure why line 22 wouldn't notice this
+//                if(searchText.charAt(searchTextSize) == "")
+//                    columnModel.get(incrIndex).visibleItem = true;
+//            }
         }
-            // need a way to mask listModels based on visibleItem bool, will figure out later
     }
     ScrollView{
         id: myScrollView
@@ -41,58 +41,21 @@ Column{
         height: parent.height-columnSearch.height
         ListView{
             id: artificalListView
-            model: artificalModel
-            delegate: artificalDelegate
-            addDisplaced: Transition{
-                NumberAnimation{ properties: "x,y"; duration: 500;}
-            }
+            model: MyModel
+            delegate: searchDelegate
         }
-    }
-
-
-    ListModel{
-        id: artificalModel
-        ListElement{
-            fruitName: "apple"
-            fruitColor: "red"
-            visibleItem: true
-        }
-        ListElement{
-            fruitName: "banana"
-            fruitColor: "yellow"
-            visibleItem: true
-        }
-        ListElement{
-            fruitName: "apricot"
-            fruitColor: "orange"
-            visibleItem: true
-        }
-        ListElement{
-            fruitName: "duran"
-            fruitColor: "brown"
-            visibleItem: true
-        }
-        ListElement{
-            fruitName: "apple"
-            fruitColor: "red"
-            visibleItem: true
-        }
-    }
-    ListModel{
-        id: temporaryModel
     }
 
     Component{
-        id: artificalDelegate
+        id: searchDelegate
         Rectangle{
-            width: rootColumn.width
             height: 75
+            width: rootColumn.width
             Text{
                 anchors.fill: parent
-                text: fruitName
+                text:modelData.myName
             }
-            property bool visibleItem;
-            color: fruitColor
+            color: modelData.myColor
         }
     }
 }

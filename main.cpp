@@ -1,32 +1,34 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
+#include <QObject>
 #include <QQmlComponent>
-#include "qimage.h"
+#include <QQmlContext>
+#include <QSortFilterProxyModel>
+#include "src/filtermodel.h"
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-
     QQmlApplicationEngine engine;
 
-    // replace the functions below with actual arrays, they are just for testing
-//    std::vector<personnelData> personnelVector(10);
-//    QUrl jimmyPortrait = QStringLiteral("qrc:///portrait.jpg");
-//    QString jimmyName = "James Sutton";
-//    qreal jimmyScore = 4.6;
-//    personnelVector[0].setPortrait(jimmyPortrait);
-//    personnelVector[0].setName(jimmyName);
-//    personnelVector[0].setScore(jimmyScore);
-
-
-    //    QList<QObject*> dataList;
-    //    for(unsigned int perItr=0; perItr < personnelVector.size(); perItr++)
-    //    {
-    //        dataList.append(QObject(personnelVector[perItr]));
-    //   }
-
-    //    engine.rootContext()->setContextProperty("personnelModel", QVariant::fromValue(dataList));
-        engine.load(QUrl(QStringLiteral("qrc:///ShyftWrk.qml")));
-
+    QList<FilterModel*> vm;
+    QVector<QString> name;
+    QVector<QString> color;
+    name.append("apple");
+    color.append("red");
+    name.append("banana");
+    color.append("yellow");
+    name.append("apricot");
+    color.append("orange");
+    name.append("duran");
+    color.append("brown");
+    for(int i=0; i<name.size(); i++){
+        vm.append(new FilterModel(name.at(i), color.at(i)));
+    }
+    FilterModel* filter = new FilterModel(name.at(0),color.at(0));
+    engine.rootContext()->setContextProperty("MyModel", filter);
+    engine.load(QUrl(QStringLiteral("qrc:///ShyftWrk.qml")));
+    QObject *win = engine.rootObjects()[0];
+    QObject *search = win->findChild<QObject*>("search");
+    QObject::connect(search, SIGNAL(hasText(QString)), &vm, SLOT(searchTextChanged(QString)));
     return app.exec();
 }

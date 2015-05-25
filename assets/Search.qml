@@ -3,7 +3,8 @@ import QtGraphicalEffects 1.0
 
 FocusScope {
     id: root
-    signal hasText
+    objectName: "search"
+    signal hasText(string searchText);
     property alias searchText: textInput.text
     property string oldText: ""
     BorderImage {
@@ -39,7 +40,7 @@ FocusScope {
         onTextChanged: {
             if(textInput.text !== oldText)
             {
-                root.hasText();
+                root.hasText(textInput.text);
                 oldText = textInput.text
             }
         }

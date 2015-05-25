@@ -3,7 +3,8 @@ TEMPLATE = app
 QT += qml quick widgets
 
 SOURCES += main.cpp \
-    personneldata.cpp
+    src/employeemodel.cpp \
+    src/filtermodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -14,6 +15,7 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    personneldata.h
+    src/employeemodel.h \
+    src/filtermodel.h
 
 DISTFILES +=
