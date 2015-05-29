@@ -12,6 +12,7 @@ Image {
     property int fontSize: 10
     property int borderWidth: 1
     property int borderRadius: 2
+    property real overlayOpacity: 1
     scale: state === "Pressed" ? 0.96 : 1.0
     onEnabledChanged: state = ""
     signal clicked
@@ -23,6 +24,9 @@ Image {
             easing.type: Easing.InOutCubic
         }
     }
+
+
+
 
     //defining the mouse area signals for the button
     MouseArea{
@@ -58,6 +62,7 @@ Image {
         }
     ]
     //define how the colors & geometry transitions for each state
+
     transitions: [
         Transition{
             from: ""; to:"Hovering"
@@ -73,6 +78,7 @@ Image {
         anchors.fill:root
         source: root
         color: "transparent"
+        opacity: overlayOpacity
         z:1
     }
 }

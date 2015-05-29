@@ -4,7 +4,7 @@
         <file>ShiftScheduler.qml</file>
         <file>EmployeeEditor.qml</file>
         <file>EmployeeViewer.qml</file>
-        <file>assets/DayButtons.qml</file>
+        <file>assets/Clickable.qml</file>
         <file>assets/icons/arrow_left.svg</file>
         <file>assets/icons/arrow_right.svg</file>
         <file>ScrollableEmployeeColumn.qml</file>

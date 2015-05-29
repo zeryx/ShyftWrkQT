@@ -14,7 +14,7 @@ Rectangle{
         anchors.horizontalCenter: parent.horizontalCenter
         height: selectedDay.height
         spacing: 2
-        MyAssets.DayButtons{
+        MyAssets.Clickable{
             source:"assets/icons/arrow_left.svg"
             height: selectedDay.height
             onClicked: {
@@ -44,7 +44,7 @@ Rectangle{
         }
 
 
-        MyAssets.DayButtons{
+        MyAssets.Clickable{
             source:"assets/icons/arrow_right.svg"
             height: selectedDay.height
             onClicked: {

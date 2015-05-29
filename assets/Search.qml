@@ -5,7 +5,7 @@ FocusScope {
     id: root
     objectName: "search"
     signal hasText(string searchText);
-    property alias searchText: textInput.text
+    property string searchText;
     property string oldText: ""
     BorderImage {
         id: searchBorder
@@ -20,7 +20,6 @@ FocusScope {
             anchors.fill: searchBorder
             source: searchBorder
             color:"transparent"
-
         }
 
     Text{
@@ -40,7 +39,8 @@ FocusScope {
         onTextChanged: {
             if(textInput.text !== oldText)
             {
-                root.hasText(textInput.text);
+                searchText= "^"+textInput.text;
+                root.hasText(searchText);
                 oldText = textInput.text
             }
         }

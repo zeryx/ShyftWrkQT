@@ -1,61 +1,82 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.2
 import "assets" as MyAssets
+
 Column{
     id: rootColumn
     spacing: 2
+    function nassert(aId, a, bId, b){
+        console.log(aId + " equals: " + a + "\n"+ bId + " equals: " + b);
+        console.count("nassert called")
+    }
+
     MyAssets.Search{
         id: columnSearch
         width: parent.width
         height: 25
-        property int incrIndex;
-        property int searchTextSize;
-        property int incrStr;
-        //when search has text, check all model data to see if the names match, if they don't, remove from view
-        onHasText: {
-//            searchTextSize = searchText.length-1
-//            for(incrIndex =0; incrIndex < columnModel.count; incrIndex++){
-
-//                for(incrStr=0; incrStr<=searchTextSize; incrStr++)
-//                {
-
-//                    if(searchText.charAt(incrStr) !== columnModel.get(incrIndex).fruitName.charAt(incrStr))
-//                    {
-//                        columnModel.get(incrIndex).visibleItem = false;
-//                        break;
-//                    }
-//                    //but if they do, make sure its visible
-//                    else{
-//                        columnModel.get(incrIndex).visibleItem = true;
-//                    }
-//                }
-//                //if the textbox is empty, everything should be visible (not sure why line 22 wouldn't notice this
-//                if(searchText.charAt(searchTextSize) == "")
-//                    columnModel.get(incrIndex).visibleItem = true;
-//            }
-        }
     }
     ScrollView{
         id: myScrollView
         frameVisible: true
         height: parent.height-columnSearch.height
         ListView{
-            id: artificalListView
-            model: MyModel
+            id: myListView
+            model: searchFilteredModel
             delegate: searchDelegate
+            highlightFollowsCurrentItem: true
+            spacing: 2
+            highlight: Rectangle{
+                color:"transparent"
+                z:1
+                border.color: Qt.lighter('blue')
+                border.width: 1
+                radius:4
+            }
+            highlightMoveDuration: 0
+
         }
     }
 
     Component{
         id: searchDelegate
         Rectangle{
-            height: 75
-            width: rootColumn.width
-            Text{
-                anchors.fill: parent
-                text:modelData.myName
+            id: delRectangle
+            height: 250
+            z:0
+            width: myListView.width
+            MyAssets.Clickable{
+                id: portraitText
+                source: portrait
+                smooth: true
+                antialiasing: true
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                height: 150
+                fillMode: Image.PreserveAspectFit
+                overlayOpacity: 0.4
+                onClicked: {
+                    myListView.currentIndex = index;
+                }
             }
-            color: modelData.myColor
+            Text{
+                id: nameText
+                text: name
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: portraitText.bottom
+            }
+            Text{
+                id: positionText
+                anchors.top: nameText.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: position
+            }
+            Text{
+                id:scoreText
+                anchors.top: positionText.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: score
+            }
         }
+
     }
 }
