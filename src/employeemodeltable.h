@@ -15,11 +15,11 @@ class EmployeeModelTable : public QAbstractTableModel
 
 public:
 
-    typedef QList<EmployeeData*>::const_iterator const_iterator;
 
     explicit EmployeeModelTable(QObject *parent=0);
 
-    explicit EmployeeModelTable(const QString &name, QObject *parent =0);
+    explicit EmployeeModelTable(const QString &name,  QObject *parent =0);
+
 
 public:
 
@@ -30,37 +30,37 @@ public:
         portraitRole,
         scoreRole
     };
+
     //virtual inherited members from QAbstractTableModel
 public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
-//    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(int column) const;
+
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole)const;
 
     bool setData(const QModelIndex &index,  QVariant &value, int role);
 
-//    Qt::ItemFlags flags(const QModelIndex &parent = QModelIndex()) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 
 
 public:
 
-    void addPerson(EmployeeData *person);
+    void addPerson(EmployeeData *person, int column);
 
-    void removePerson(int index);
+    bool addPersonFromSql(QString &hostname, QString &database, QString &username, QString &password);
 
-    EmployeeData* getPerson(size_t index);
 
-    const_iterator begin()const{return m_data.begin();}
+    void removePerson(QModelIndex &index);
 
-    const_iterator end()const{return m_data.end();}
+    EmployeeData* getPerson(QModelIndex &index);
 
     QString name() const;
 
 signals:
-
-    void nameChanged(QString& newname);
 
     void rowChanged(int newRowCount);
 
@@ -74,7 +74,7 @@ protected:
 
 public:
 
-    QList<EmployeeData*> m_data;
+    QList < QList < EmployeeData* > > m_data;
 
     QString m_name;
 

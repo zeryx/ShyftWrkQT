@@ -1,6 +1,8 @@
 TEMPLATE = app
 
-QT += qml quick widgets
+QT += qml quick widgets \
+    sql
+
 
 SOURCES += main.cpp \
     src/employeedata.cpp \
@@ -15,9 +17,9 @@ QML_IMPORT_PATH =
 # Default rules for deployment.
 include(deployment.pri)
 
+QTPLUGIN += QSQLMYSQL
+
 HEADERS += \
     src/employeedata.h \
     src/employeeModelList.h \
     src/employeemodeltable.h
-
-DISTFILES +=

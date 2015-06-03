@@ -70,6 +70,7 @@ Rectangle{
         nameFilters: ["Image Files (*.jpg *.png *.gif)", "All files (*)"]
         onAccepted: {
             portraitImportLoader.fileChosen();
+            console.log(fileDialog.fileUrl);
             fileDialog.close();
         }
         onRejected: {

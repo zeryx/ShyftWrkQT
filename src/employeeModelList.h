@@ -5,6 +5,7 @@
 #include <QList>
 #include "employeedata.h"
 #include <QSortFilterProxyModel>
+#include <QSqlDatabase>
 class EmployeeModelList : public QAbstractListModel
 {
 
@@ -32,18 +33,20 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
-//    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole)const;
 
     bool setData(const QModelIndex &index,  QVariant &value, int role);
 
-//    Qt::ItemFlags flags(const QModelIndex &parent = QModelIndex()) const;
+    Qt::ItemFlags flags(const QModelIndex &parent = QModelIndex()) const;
 
 
 public:
 
     void addPerson(EmployeeData *person);
+
+    bool addPersonFromSql(QSqlDatabase &db);
+
+    bool addPersonToSql (QSqlDatabase &db, EmployeeData *Person);
 
     void removePerson(int index);
 
