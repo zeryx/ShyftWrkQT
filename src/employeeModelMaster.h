@@ -1,12 +1,12 @@
-#ifndef EMPLOYEEMODELLIST_H
-#define EMPLOYEEMODELLIST_H
+#ifndef EMPLOYEEMODELMASTER_H
+#define EMPLOYEEMODELMASTER_H
 #include <QObject>
 #include <QAbstractTableModel>
 #include <QList>
 #include "employeedata.h"
 #include <QSortFilterProxyModel>
 #include <QSqlDatabase>
-class EmployeeModelList : public QAbstractListModel
+class EmployeeModelMaster : public QAbstractListModel
 {
 
     Q_OBJECT
@@ -15,13 +15,11 @@ public:
 
     typedef QList<EmployeeData*>::const_iterator const_iterator;
 
-    explicit EmployeeModelList(QObject *parent=0);
-
-    explicit EmployeeModelList(const QString &name, QObject *parent =0);
+    explicit EmployeeModelMaster(QObject *parent=0);
 
 public:
 
-    enum EmployeeModelListDataRole
+    enum EmployeeModelMasterDataRole
     {
         nameRole=Qt::UserRole+1,
         positionRole,
@@ -44,7 +42,7 @@ public:
 
     void addPerson(EmployeeData *person);
 
-    bool addPersonFromSql(QSqlDatabase &db);
+    bool pullFromSQL();
 
     bool addPersonToSql (QSqlDatabase &db, EmployeeData *Person);
 
@@ -56,16 +54,11 @@ public:
 
     const_iterator end()const{return m_data.end();}
 
-    QString name() const;
-
 signals:
 
     void nameChanged(QString& newname);
 
-    void rowChanged(int newRowCount);
-
-    void signalEmit(int irow, int icolumn);
-
+    void rowChanged(int newRowCount, EmployeeModelMaster* master);
 
 protected:
 
@@ -75,9 +68,8 @@ public:
 
     QList<EmployeeData*> m_data;
 
-    QString m_name;
 
 
 };
 
-#endif // EMPLOYEEMODELLIST_H
+#endif // EMLOYEEMODELMASTER_H

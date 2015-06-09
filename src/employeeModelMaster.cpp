@@ -1,4 +1,4 @@
-﻿#include "employeeModelList.h"
+﻿#include "src/employeeModelMaster.h"
 #include <QObject>
 #include <QDebug>
 #include <assert.h>
@@ -8,19 +8,13 @@
 #include <QSqlError>
 #include <QSqlRecord>
 
-EmployeeModelList::EmployeeModelList(QObject *parent)
+EmployeeModelMaster::EmployeeModelMaster(QObject *parent)
     :QAbstractListModel(parent)
 {
 }
 
-EmployeeModelList::EmployeeModelList(const QString &name, QObject *parent)
-    :m_name(name)
-    ,QAbstractListModel(parent)
-{
-}
 
-
-int EmployeeModelList::rowCount(const QModelIndex &parent) const
+int EmployeeModelMaster::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
 
@@ -30,7 +24,7 @@ int EmployeeModelList::rowCount(const QModelIndex &parent) const
     return m_data.count();
 }
 
-QVariant EmployeeModelList::data(const QModelIndex &index, int role) const
+QVariant EmployeeModelMaster::data(const QModelIndex &index, int role) const
 {
     if (index.row() < 0 || index.row() >= m_data.count())
         return QVariant();
@@ -49,7 +43,7 @@ QVariant EmployeeModelList::data(const QModelIndex &index, int role) const
         return QVariant();
 }
 
-bool EmployeeModelList::setData(const QModelIndex &index, QVariant &value, int role)
+bool EmployeeModelMaster::setData(const QModelIndex &index, QVariant &value, int role)
 {
     if(index.isValid() && index.row() <= this->rowCount() && index.row() >= 0)
     {
@@ -81,17 +75,17 @@ bool EmployeeModelList::setData(const QModelIndex &index, QVariant &value, int r
     return false;
 }
 
-Qt::ItemFlags EmployeeModelList::flags(const QModelIndex &index) const
+Qt::ItemFlags EmployeeModelMaster::flags(const QModelIndex &index) const
 {
     if(index.isValid())
-        return EmployeeModelList::flags(index) | Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        return EmployeeModelMaster::flags(index) | Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
     return Qt::NoItemFlags;
 }
 
 //no slots yay! will have data manipulation slots later
 
-void EmployeeModelList::addPerson(EmployeeData* person)
+void EmployeeModelMaster::addPerson(EmployeeData* person)
 {
     if(std::find(m_data.begin(),m_data.end(), person) != m_data.end()) //This doesn't do anything
     {
@@ -104,27 +98,51 @@ void EmployeeModelList::addPerson(EmployeeData* person)
     m_data << person;
 
     endInsertRows();
+
+    rowChanged(this->rowCount(), this);
 }
 
 
-bool EmployeeModelList::addPersonFromSql(QSqlDatabase &db)
+bool EmployeeModelMaster::pullFromSQL() // this now works, uses http however.
 {
-        QSqlQuery query("SELECT * FROM Employees", db);
-        int nameField = query.record().indexOf("Name");
-        int positionField = query.record().indexOf("Position");
-        int portraitField = query.record().indexOf("Portrait");
-        int scoreField = query.record().indexOf("Individual_Performance");
-        while(query.next()){
-            QString Name = query.value(nameField).toString();
-            QString Position = query.value(positionField).toString();
-            QUrl Portrait = QUrl(query.value(portraitField).toString());
-            int Score = query.value(scoreField).toInt();
-            this->addPerson(new EmployeeData(Portrait, Name, Position, Score));
-        }
-        return true;
+    QSqlDatabase db;
+
+    db = QSqlDatabase::addDatabase("QMYSQL", "pullFromSQL");
+    db.setHostName("45.33.71.118");
+    db.setPort(3306);
+    db.setDatabaseName("ShyftWrk");
+    db.setUserName("testuser");
+    db.setPassword("test");
+
+    qDebug() << db.open();
+
+    if(!db.isOpen())
+    {
+        qDebug() << db.lastError();
+        return false;
+    }
+    QSqlQuery query("SELECT * FROM Employees", db);
+
+    int nameField = query.record().indexOf("Name");
+    int positionField = query.record().indexOf("Position");
+    int portraitField = query.record().indexOf("Portrait");
+    int scoreField = query.record().indexOf("Individual_Performance");
+    QUrl baseURL("http://sql_ctrl:5uQQo_f@shyftwrk.com:80");
+
+    while(query.next()){
+        QString Name = query.value(nameField).toString();
+        QString Position = query.value(positionField).toString();
+        QUrl relative = query.value(portraitField).toUrl();
+
+//        qDebug() <<"portrait is: " << baseURL.resolved(relative).toString();
+        int Score = query.value(scoreField).toInt();
+        this->addPerson(new EmployeeData(baseURL.resolved(relative), Name, Position, Score));
+    }
+    rowChanged(this->rowCount(), this);
+    return true;
 }
 
-bool EmployeeModelList::addPersonToSql(QSqlDatabase &db, EmployeeData * Person)
+bool EmployeeModelMaster::addPersonToSql(QSqlDatabase &db, EmployeeData * Person)
 {
         QSqlQuery query(db);
         query.prepare("INSERT INTO `Employees` (id, Name, Position, Portrait, Individual_Performance, Interpersonal_Performance)"
@@ -144,7 +162,7 @@ bool EmployeeModelList::addPersonToSql(QSqlDatabase &db, EmployeeData * Person)
         return true;
 }
 
-void EmployeeModelList::removePerson(int col)
+void EmployeeModelMaster::removePerson(int col)
 {
     QList<EmployeeData*>::iterator itr;
 
@@ -157,10 +175,11 @@ void EmployeeModelList::removePerson(int col)
     m_data.erase(itr);
 
     endRemoveRows();
+    rowChanged(this->rowCount(), this);
 }
 
 
-QHash<int, QByteArray> EmployeeModelList::roleNames() const
+QHash<int, QByteArray> EmployeeModelMaster::roleNames() const
 {
     QHash<int, QByteArray> roles;
     roles[nameRole] = "name";
@@ -169,12 +188,8 @@ QHash<int, QByteArray> EmployeeModelList::roleNames() const
     roles[scoreRole] = "score";
     return roles;
 }
-EmployeeData* EmployeeModelList::getPerson(size_t index)
+EmployeeData* EmployeeModelMaster::getPerson(size_t index)
 {
     return m_data[index];
 }
 
-QString EmployeeModelList::name() const
-{
-    return m_name;
-}

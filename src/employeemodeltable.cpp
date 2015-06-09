@@ -1,4 +1,5 @@
 #include "employeemodeltable.h"
+#include "employeeModelMaster.h"
 #include <QObject>
 #include <QDebug>
 #include <QSqlDatabase>
@@ -8,38 +9,25 @@
 EmployeeModelTable::EmployeeModelTable(QObject *parent)
     :QAbstractTableModel(parent)
 {
-}
-
-EmployeeModelTable::EmployeeModelTable(const QString &name, QObject *parent)
-:m_name(name)
-    ,QAbstractTableModel(parent)
-{
+    QList<EmployeeData*> null;
+    m_data.append(null);
 }
 
 int EmployeeModelTable::rowCount(const QModelIndex &parent) const
 {
-    if(!m_data.isEmpty())
+    Q_UNUSED(parent);
+    if(m_data[0].isEmpty())
         return 0;
-
-    //rows are the lower QList
-    return m_data[parent.column()].count();
+    qDebug() <<"row counts value is: ";
+    return m_data[0].count(); // since each column is identical, get the count from column 0
 }
 
-int EmployeeModelTable::rowCount(const int column)const
-{
-    if(!m_data.isEmpty())
-        return 0;
-
-    return m_data[column].count();
-}
-int EmployeeModelTable::columnCount(const QModelIndex &parent) const
+int EmployeeModelTable::columnCount(const QModelIndex &parent) const     //all columns are identical
 {
     Q_UNUSED(parent);
-    if(!m_data.isEmpty())
-        return 0;
 
-    //columns are the higher QList
     return m_data.count();
+
 }
 
 QVariant EmployeeModelTable::data(const QModelIndex &index, int role) const
@@ -90,11 +78,60 @@ bool EmployeeModelTable::setData(const QModelIndex &index, QVariant &value, int 
         default:
             return false;
         }
-        emit dataChanged(index, index);
+        emit dataChanged();
         return true;
     }
     return false;
 }
+
+bool EmployeeModelTable::setHeaderData(int section, Qt::Orientation orientation,  const QVariant &value, int role)
+{
+    Q_UNUSED(orientation); //orientation will always be horizontal
+
+    if(role != Qt::DisplayRole)
+        return false;
+
+    for(int i=0; i <= m_headerData.count(); i++) //if the header already exists, don't make another one
+    {
+        if(m_headerData.at(i) == value)
+            return false;
+    }
+
+    m_headerData[section] = value.toString();
+    headerDataChanged(section, m_headerData.size());
+
+    return true;
+}
+
+bool EmployeeModelTable::newHeader(const QVariant &value)
+{
+
+    for(int i=0; i<=columnCount(); i++) //if the header already exists, don't make another one
+    {
+        qDebug()<<"header adding begun";
+
+        if(m_headerData[i] == value)
+        {
+            qDebug()<<"found duplicate";
+            return false;
+        }
+    }
+    m_headerData.append(value.toString());
+    beginInsertColumns(QModelIndex(), 0, this->columnCount());
+    m_data.append(str_data);
+    qDebug() <<"Direct Columns: "<<m_data.count();
+    endInsertColumns();
+    return true;
+}
+
+QVariant EmployeeModelTable::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    Q_UNUSED(orientation); //orientation will always be horizontal
+    if(role != Qt::DisplayRole)
+        return QVariant();
+    return m_headerData.at(section);
+}
+
 
 Qt::ItemFlags EmployeeModelTable::flags(const QModelIndex &index) const
 {
@@ -104,76 +141,6 @@ Qt::ItemFlags EmployeeModelTable::flags(const QModelIndex &index) const
     return Qt::NoItemFlags;
 }
 
-void EmployeeModelTable::addPerson(EmployeeData *person, int column)
-{
-//    for(int incr=0; incr < m_data.count(); incr++)
-//    {
-//        if(std::find(m_data[incr].begin(),m_data[incr].end(), person) != m_data[incr].end())
-//        {
-//            qDebug() <<"person already exists in records!";
-//            return;
-//        }
-//    }
-    qDebug() << "row size: " <<this->rowCount(column);
-    beginInsertRows(QModelIndex(),this->rowCount(column), this->rowCount(column));
-    m_data[column] << person;
-    rowChanged(m_data[column].count());
-    endInsertRows();
-}
-
-bool EmployeeModelTable::addPersonFromSql(QString &hostname, QString &database, QString &username, QString &password)
-{
-    QSqlDatabase db;
-    db = QSqlDatabase::addDatabase("QMYSQL", "addPersonFromSQL");
-    db.setHostName(hostname);
-    db.setPort(3306);
-    db.setDatabaseName(database);
-    db.setUserName(username);
-    db.setPassword(password);
-    qDebug()<<"did the socket open? " << db.open();
-    if(!db.isOpen())
-    {
-        qDebug() << db.lastError();
-        return false;
-    }
-        QSqlQuery query("SELECT * FROM Employees", db);
-        int nameField = query.record().indexOf("Name");
-        int positionField = query.record().indexOf("Position");
-        int portraitField = query.record().indexOf("Portrait");
-        int scoreField = query.record().indexOf("Individual_Performance");
-        while(query.next()){
-            QString Name = query.value(nameField).toString();
-            QString Position = query.value(positionField).toString();
-            QUrl Portrait = QUrl(query.value(portraitField).toString());
-            int Score = query.value(scoreField).toInt();
-
-            //need to fix addPerson before this line works
-//            this->addPerson(new EmployeeData(Portrait, Name, Position, Score));
-        }
-        db.close();
-        if(db.isOpen())
-        {
-            qDebug() << db.lastError();
-            return false;
-        }
-        return true;
-}
-
-void EmployeeModelTable::removePerson(QModelIndex &index)
-{
-    QList<EmployeeData*>::iterator itr;
-    itr = m_data[index.column()].begin();
-    beginRemoveRows(QModelIndex(), this->rowCount(), this->rowCount());
-    std::advance(itr, index.row());
-    m_data[index.column()].erase(itr);
-    endRemoveRows();
-}
-
-
-EmployeeData* EmployeeModelTable::getPerson(QModelIndex &index)
-{
-    return m_data[index.column()][index.row()];
-}
 
 QHash<int, QByteArray> EmployeeModelTable::roleNames() const
 {
@@ -185,7 +152,35 @@ QHash<int, QByteArray> EmployeeModelTable::roleNames() const
     return roles;
 }
 
-QString EmployeeModelTable::name() const
+void EmployeeModelTable::masterDataChanged(int rows, EmployeeModelMaster* master)
 {
-    return m_name;
+    qDebug()<< "rows: "<<rows;
+    for(int k=0; k<=this->columnCount(); k++)
+    {
+//        int ctr =0;
+//        while(rows >= this->m_data[k].count()) // if the new row is bigger than the current, append with dummies
+//        {
+//            EmployeeData* nullperson = new EmployeeData();
+//            this->m_data[k].append(nullperson);
+//            this->str_data.append(nullperson);
+//        }
+//        qDebug()<<rowCount();
+//        for(int i=0; i <= rows; i++)
+//        {
+//            beginInsertRows(QModelIndex(), 0, rowCount()+1);
+//            if(i > m_data[k].count())
+//            {
+//                qDebug() <<"appended column "<< k <<"at row: "<< i;
+//                this->m_data[k].append(master->m_data[i]);
+//            }
+//            if(i > str_data.count())
+//                this->str_data.append(master->m_data[i]);
+//            this->m_data[k][i] = master->m_data[i]; //replace existing data in table with new data from master
+//            this->str_data[i] = master->m_data[i];
+
+//            qDebug() << this->m_data[k][i]->portrait().toString();
+//            endInsertRows();
+//            newHeader(master->m_data[i]->position());
+//        }
+    }
 }

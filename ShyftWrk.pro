@@ -6,8 +6,8 @@ QT += qml quick widgets \
 
 SOURCES += main.cpp \
     src/employeedata.cpp \
-    src/employeeModelList.cpp \
-    src/employeemodeltable.cpp
+    src/employeemodeltable.cpp \
+    src/employeeModelMaster.cpp
 
 RESOURCES += qml.qrc
 
@@ -21,5 +21,5 @@ QTPLUGIN += QSQLMYSQL
 
 HEADERS += \
     src/employeedata.h \
-    src/employeeModelList.h \
-    src/employeemodeltable.h
+    src/employeemodeltable.h \
+    src/employeeModelMaster.h

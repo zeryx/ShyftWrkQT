@@ -6,6 +6,8 @@
 #include <QAbstractTableModel>
 #include <QList>
 #include "employeedata.h"
+#include "employeeModelMaster.h"
+#include <QSqlDatabase>
 #include <QSortFilterProxyModel>
 
 class EmployeeModelTable : public QAbstractTableModel
@@ -18,8 +20,6 @@ public:
 
     explicit EmployeeModelTable(QObject *parent=0);
 
-    explicit EmployeeModelTable(const QString &name,  QObject *parent =0);
-
 
 public:
 
@@ -31,12 +31,9 @@ public:
         scoreRole
     };
 
-    //virtual inherited members from QAbstractTableModel
-public:
+public:     //virtual inherited members from QAbstractTableModel
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
-
-    int rowCount(int column) const;
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
@@ -44,19 +41,16 @@ public:
 
     bool setData(const QModelIndex &index,  QVariant &value, int role);
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::DisplayRole);
+
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 
-public:
+public: //new members specifically for our implementation
 
-    void addPerson(EmployeeData *person, int column);
-
-    bool addPersonFromSql(QString &hostname, QString &database, QString &username, QString &password);
-
-
-    void removePerson(QModelIndex &index);
-
-    EmployeeData* getPerson(QModelIndex &index);
+    bool newHeader(const QVariant &value);
 
     QString name() const;
 
@@ -64,9 +58,16 @@ signals:
 
     void rowChanged(int newRowCount);
 
-    void columnChanged(int newColumnCount);
+    void columnChanged(int newColumnCount); //both of these are dummies since proxyModel will be doing all the work on top
 
-    void signalEmit(int irow, int icolumn);
+    void headerDataChanged(int first, int last); //the only important signal from the tableModel
+
+    void dataChanged();
+
+public slots:
+
+    void masterDataChanged(int rows, EmployeeModelMaster* master); //tells employeeModelTable to update, pulls from employeeModelMaster.
+
 
 protected:
 
@@ -76,7 +77,9 @@ public:
 
     QList < QList < EmployeeData* > > m_data;
 
-    QString m_name;
+    QList < EmployeeData* > str_data;
+
+    QList < QString > m_headerData;
 
 };
 

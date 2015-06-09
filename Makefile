@@ -50,19 +50,19 @@ OBJECTS_DIR   = ./
 
 SOURCES       = main.cpp \
 		src/employeedata.cpp \
-		src/employeeModelList.cpp \
-		src/employeemodeltable.cpp qrc_qml.cpp \
+		src/employeemodeltable.cpp \
+		src/employeeModelMaster.cpp qrc_qml.cpp \
 		moc_employeedata.cpp \
-		moc_employeeModelList.cpp \
-		moc_employeemodeltable.cpp
+		moc_employeemodeltable.cpp \
+		moc_employeeModelMaster.cpp
 OBJECTS       = main.o \
 		employeedata.o \
-		employeeModelList.o \
 		employeemodeltable.o \
+		employeeModelMaster.o \
 		qrc_qml.o \
 		moc_employeedata.o \
-		moc_employeeModelList.o \
-		moc_employeemodeltable.o
+		moc_employeemodeltable.o \
+		moc_employeeModelMaster.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -123,11 +123,11 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		ShyftWrk.pro src/employeedata.h \
-		src/employeeModelList.h \
-		src/employeemodeltable.h main.cpp \
+		src/employeemodeltable.h \
+		src/employeeModelMaster.h main.cpp \
 		src/employeedata.cpp \
-		src/employeeModelList.cpp \
-		src/employeemodeltable.cpp
+		src/employeemodeltable.cpp \
+		src/employeeModelMaster.cpp
 QMAKE_TARGET  = ShyftWrk
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = ShyftWrk
@@ -310,8 +310,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents qml.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents src/employeedata.h src/employeeModelList.h src/employeemodeltable.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp src/employeedata.cpp src/employeeModelList.cpp src/employeemodeltable.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/employeedata.h src/employeemodeltable.h src/employeeModelMaster.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp src/employeedata.cpp src/employeemodeltable.cpp src/employeeModelMaster.cpp $(DISTDIR)/
 
 
 clean:compiler_clean 
@@ -348,19 +348,19 @@ qrc_qml.cpp: qml.qrc \
 		assets/icons/arrow_left.svg
 	/usr/lib/x86_64-linux-gnu/qt5/bin/rcc -name qml qml.qrc -o qrc_qml.cpp
 
-compiler_moc_header_make_all: moc_employeedata.cpp moc_employeeModelList.cpp moc_employeemodeltable.cpp
+compiler_moc_header_make_all: moc_employeedata.cpp moc_employeemodeltable.cpp moc_employeeModelMaster.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_employeedata.cpp moc_employeeModelList.cpp moc_employeemodeltable.cpp
+	-$(DEL_FILE) moc_employeedata.cpp moc_employeemodeltable.cpp moc_employeeModelMaster.cpp
 moc_employeedata.cpp: src/employeedata.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/employeedata.h -o moc_employeedata.cpp
-
-moc_employeeModelList.cpp: src/employeedata.h \
-		src/employeeModelList.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/employeeModelList.h -o moc_employeeModelList.cpp
 
 moc_employeemodeltable.cpp: src/employeedata.h \
 		src/employeemodeltable.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/employeemodeltable.h -o moc_employeemodeltable.cpp
+
+moc_employeeModelMaster.cpp: src/employeedata.h \
+		src/employeeModelMaster.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/employeeModelMaster.h -o moc_employeeModelMaster.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -376,7 +376,7 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean
 
 ####### Compile
 
-main.o: main.cpp src/employeeModelList.h \
+main.o: main.cpp src/employeeModelMaster.h \
 		src/employeedata.h \
 		src/employeemodeltable.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
@@ -384,12 +384,13 @@ main.o: main.cpp src/employeeModelList.h \
 employeedata.o: src/employeedata.cpp src/employeedata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o employeedata.o src/employeedata.cpp
 
-employeeModelList.o: src/employeeModelList.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o employeeModelList.o src/employeeModelList.cpp
-
 employeemodeltable.o: src/employeemodeltable.cpp src/employeemodeltable.h \
-		src/employeedata.h
+		src/employeedata.h \
+		src/employeeModelMaster.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o employeemodeltable.o src/employeemodeltable.cpp
+
+employeeModelMaster.o: src/employeeModelMaster.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o employeeModelMaster.o src/employeeModelMaster.cpp
 
 qrc_qml.o: qrc_qml.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_qml.o qrc_qml.cpp
@@ -397,11 +398,11 @@ qrc_qml.o: qrc_qml.cpp
 moc_employeedata.o: moc_employeedata.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_employeedata.o moc_employeedata.cpp
 
-moc_employeeModelList.o: moc_employeeModelList.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_employeeModelList.o moc_employeeModelList.cpp
-
 moc_employeemodeltable.o: moc_employeemodeltable.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_employeemodeltable.o moc_employeemodeltable.cpp
+
+moc_employeeModelMaster.o: moc_employeeModelMaster.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_employeeModelMaster.o moc_employeeModelMaster.cpp
 
 ####### Install
 
