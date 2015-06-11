@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Layouts 1.1
 import "assets" as MyAssets
 Rectangle{
     id: root
@@ -58,5 +59,9 @@ Rectangle{
             }
         }
     }
-// put listViews here, dynamically created components depending on the number & titles associated
+    MyAssets.ScheduleViewingPane{
+        width: parent.width-200
+        height: parent.height - daySpinner.height
+        anchors.bottom: parent.bottom
+    }
 }

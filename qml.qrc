@@ -1,14 +1,15 @@
 <RCC>
     <qresource prefix="/">
-        <file>ShyftWrk.qml</file>
-        <file>ShiftScheduler.qml</file>
-        <file>EmployeeEditor.qml</file>
-        <file>EmployeeViewer.qml</file>
-        <file>assets/Clickable.qml</file>
-        <file>assets/icons/arrow_left.svg</file>
-        <file>assets/icons/arrow_right.svg</file>
-        <file>ScrollableEmployeeColumn.qml</file>
-        <file>assets/Search.qml</file>
-        <file>assets/searchbox.jpg</file>
+        <file>qml/EmployeeEditor.qml</file>
+        <file>qml/EmployeeViewer.qml</file>
+        <file>qml/ScrollableEmployeeColumn.qml</file>
+        <file>qml/ShiftScheduler.qml</file>
+        <file>qml/ShyftWrk.qml</file>
+        <file>qml/assets/Clickable.qml</file>
+        <file>qml/assets/Search.qml</file>
+        <file>qml/assets/icons/arrow_left.svg</file>
+        <file>qml/assets/icons/arrow_right.svg</file>
+        <file>qml/assets/searchbox.jpg</file>
+        <file>qml/assets/ScheduleViewingPane.qml</file>
     </qresource>
 </RCC>

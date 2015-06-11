@@ -1,11 +1,12 @@
 ﻿#include "src/employeeModelMaster.h"
+
 #include <QObject>
 #include <QDebug>
-#include <assert.h>
-#include <iostream>
+#include <QSortFilterProxyModel>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QPluginLoader>
 #include <QSqlRecord>
 
 EmployeeModelMaster::EmployeeModelMaster(QObject *parent)
@@ -83,7 +84,6 @@ Qt::ItemFlags EmployeeModelMaster::flags(const QModelIndex &index) const
     return Qt::NoItemFlags;
 }
 
-//no slots yay! will have data manipulation slots later
 
 void EmployeeModelMaster::addPerson(EmployeeData* person)
 {
@@ -99,22 +99,21 @@ void EmployeeModelMaster::addPerson(EmployeeData* person)
 
     endInsertRows();
 
-    rowChanged(this->rowCount(), this);
 }
 
-
-bool EmployeeModelMaster::pullFromSQL() // this now works, uses http however.
+void EmployeeModelMaster::configSQL()
 {
-    QSqlDatabase db;
-
     db = QSqlDatabase::addDatabase("QMYSQL", "pullFromSQL");
     db.setHostName("45.33.71.118");
     db.setPort(3306);
     db.setDatabaseName("ShyftWrk");
     db.setUserName("testuser");
     db.setPassword("test");
+    qDebug() << "database connection is opened? " <<db.open();
+}
 
-    qDebug() << db.open();
+bool EmployeeModelMaster::pullFromSQL() //pulls from configured SQL server with parameters specified in configSQL().
+{
 
     if(!db.isOpen())
     {
@@ -127,7 +126,7 @@ bool EmployeeModelMaster::pullFromSQL() // this now works, uses http however.
     int positionField = query.record().indexOf("Position");
     int portraitField = query.record().indexOf("Portrait");
     int scoreField = query.record().indexOf("Individual_Performance");
-    QUrl baseURL("http://sql_ctrl:5uQQo_f@shyftwrk.com:80");
+    QUrl baseURL("http://shyftwrk.com:80");
 
     while(query.next()){
         QString Name = query.value(nameField).toString();
@@ -138,11 +137,13 @@ bool EmployeeModelMaster::pullFromSQL() // this now works, uses http however.
         int Score = query.value(scoreField).toInt();
         this->addPerson(new EmployeeData(baseURL.resolved(relative), Name, Position, Score));
     }
-    rowChanged(this->rowCount(), this);
+
+    updateMirrors(this->rowCount(), this);
+
     return true;
 }
 
-bool EmployeeModelMaster::addPersonToSql(QSqlDatabase &db, EmployeeData * Person)
+bool EmployeeModelMaster::addPersonToSql( EmployeeData * Person)
 {
         QSqlQuery query(db);
         query.prepare("INSERT INTO `Employees` (id, Name, Position, Portrait, Individual_Performance, Interpersonal_Performance)"
@@ -159,6 +160,9 @@ bool EmployeeModelMaster::addPersonToSql(QSqlDatabase &db, EmployeeData * Person
         {
             return false;
         }
+
+        updateMirrors(this->rowCount(), this);
+
         return true;
 }
 
@@ -175,7 +179,8 @@ void EmployeeModelMaster::removePerson(int col)
     m_data.erase(itr);
 
     endRemoveRows();
-    rowChanged(this->rowCount(), this);
+
+    updateMirrors(this->rowCount(), this);
 }
 
 

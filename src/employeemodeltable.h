@@ -3,19 +3,21 @@
 
 
 #include <QObject>
-#include <QAbstractTableModel>
 #include <QList>
+#include <QAbstractTableModel>
+#include <QSortFilterProxyModel>
 #include "employeedata.h"
 #include "employeeModelMaster.h"
-#include <QSqlDatabase>
-#include <QSortFilterProxyModel>
 
 class EmployeeModelTable : public QAbstractTableModel
 {
 
     Q_OBJECT
+    Q_PROPERTY(QStringList headerList READ headerList)
 
 public:
+
+    typedef QList<QList<EmployeeData*> >::const_iterator const_iterator;
 
 
     explicit EmployeeModelTable(QObject *parent=0);
@@ -23,7 +25,7 @@ public:
 
 public:
 
-    enum EmployeeModelListDataRole
+    enum EmployeeModelTableDataRole
     {
         nameRole=Qt::UserRole+1,
         positionRole,
@@ -37,7 +39,7 @@ public:     //virtual inherited members from QAbstractTableModel
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole)const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
     bool setData(const QModelIndex &index,  QVariant &value, int role);
 
@@ -54,16 +56,17 @@ public: //new members specifically for our implementation
 
     QString name() const;
 
+    QStringList headerList();
+
+    const_iterator begin()const{return m_data.begin();}
+
+    const_iterator end()const{return m_data.end();}
+
 signals:
-
-    void rowChanged(int newRowCount);
-
-    void columnChanged(int newColumnCount); //both of these are dummies since proxyModel will be doing all the work on top
 
     void headerDataChanged(int first, int last); //the only important signal from the tableModel
 
-    void dataChanged();
-
+    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 public slots:
 
     void masterDataChanged(int rows, EmployeeModelMaster* master); //tells employeeModelTable to update, pulls from employeeModelMaster.
@@ -73,13 +76,15 @@ protected:
 
     QHash<int, QByteArray> roleNames() const;
 
+    QList < EmployeeData* > str_data;
+
+    QMap < int, QString > m_headerData;
+
 public:
 
     QList < QList < EmployeeData* > > m_data;
 
-    QList < EmployeeData* > str_data;
-
-    QList < QString > m_headerData;
+    int headerItr;
 
 };
 

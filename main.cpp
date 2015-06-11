@@ -1,41 +1,50 @@
 ﻿#include <QApplication>
 #include <QQmlApplicationEngine>
+#include <QtQml>
 #include <QObject>
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QDebug>
-#include <QSortFilterProxyModel>
-#include <QPluginLoader>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QSqlRecord>
-#include "src/employeeModelMaster.h"
-#include "src/employeemodeltable.h"
+#include <src/shyftwrkwin.h>
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QQmlApplicationEngine engine;
-    EmployeeModelMaster* employeeList = new EmployeeModelMaster();
+
+    EmployeeModelMaster* masterModel = new EmployeeModelMaster();
+
+    QSortFilterProxyModel *masterfilter = new QSortFilterProxyModel();
+
+    masterfilter->setSourceModel(masterModel);
+    masterfilter->setFilterRole(masterModel->nameRole);
+    masterfilter->setFilterCaseSensitivity(Qt::CaseInsensitive);
+
     EmployeeModelTable* table = new EmployeeModelTable();
+    QObject::connect(masterModel, SIGNAL(updateMirrors(int,EmployeeModelMaster*)), table, SLOT(masterDataChanged(int,EmployeeModelMaster*)));
+    masterModel->configSQL();
+    qDebug()<<"info successfully pulled from database? " << masterModel->pullFromSQL();
 
-    QObject::connect(employeeList, SIGNAL(rowChanged(int,EmployeeModelMaster*)), table, SLOT(masterDataChanged(int,EmployeeModelMaster*)));
+    QSortFilterProxyModel *tablefilter = new QSortFilterProxyModel();
+/*    tablefilter->setSourceModel(table);
+    tablefilter->setFilterRole(table->positionRole);
+    tablefilter->setFilterCaseSensitivity(Qt::CaseInsensitive)*/;
 
-    qDebug()<<"info successfully pulled from database? " << employeeList->pullFromSQL();
-    QSortFilterProxyModel* filter = new QSortFilterProxyModel();
+    engine.rootContext()->setContextProperty("searchFilteredModel", masterfilter);
 
-    filter->setSourceModel(employeeList);
-    filter->setFilterRole(EmployeeModelMaster::nameRole);
-    filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    qDebug()<<"passed context property setting for masterFilter";
 
-    engine.rootContext()->setContextProperty("baseModel", employeeList);
+    engine.rootContext()->setContextProperty("baseTableModel", table);
+    engine.rootContext()->setContextProperty("headers", table->headerList());
 
-    engine.rootContext()->setContextProperty("searchFilteredModel", filter);
+    qDebug()<<"right before loading shyftwrk.qml";
 
-    engine.load(QUrl(QStringLiteral("qrc:///ShyftWrk.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:///qml/ShyftWrk.qml")));
+    qDebug()<<"engine loaded shyftwrk.qml";
 
     QObject *win = engine.rootObjects()[0];
     QObject *search = win->findChild<QObject*>("search");
-    QObject::connect(search, SIGNAL(hasText(QString)), filter, SLOT(setFilterRegExp(QString)));
+
+    QObject::connect(search, SIGNAL(hasText(QString)), masterfilter, SLOT(setFilterRegExp(QString)));
+
     return app.exec();
 }

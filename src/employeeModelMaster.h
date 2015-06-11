@@ -1,13 +1,17 @@
 #ifndef EMPLOYEEMODELMASTER_H
 #define EMPLOYEEMODELMASTER_H
 #include <QObject>
-#include <QAbstractTableModel>
 #include <QList>
-#include "employeedata.h"
+#include <QAbstractListModel>
 #include <QSortFilterProxyModel>
 #include <QSqlDatabase>
+#include "employeedata.h"
 class EmployeeModelMaster : public QAbstractListModel
 {
+
+/* this is the base model that interacts with the sql database, all other models mirror their data from here
+ * the model is directly used for constructing the ScrollableEmployeeColumn and is masked with a
+ *  QSortFilterProxyModel for adaptive search functionality*/
 
     Q_OBJECT
 
@@ -40,11 +44,13 @@ public:
 
 public:
 
-    void addPerson(EmployeeData *person);
+    void configSQL();
 
     bool pullFromSQL();
 
-    bool addPersonToSql (QSqlDatabase &db, EmployeeData *Person);
+    bool addPersonToSql (EmployeeData *Person);
+
+    void addPerson(EmployeeData *person);
 
     void removePerson(int index);
 
@@ -54,20 +60,23 @@ public:
 
     const_iterator end()const{return m_data.end();}
 
+
+
 signals:
 
     void nameChanged(QString& newname);
 
-    void rowChanged(int newRowCount, EmployeeModelMaster* master);
+    void updateMirrors(int newRowCount, EmployeeModelMaster* master);
 
 protected:
 
     QHash<int, QByteArray> roleNames() const;
 
+    QSqlDatabase db;
+
 public:
 
     QList<EmployeeData*> m_data;
-
 
 
 };
