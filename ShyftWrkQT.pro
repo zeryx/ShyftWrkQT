@@ -7,9 +7,7 @@ macx:CONFIG -= app_bundle
 
 SOURCES += main.cpp \
     src/employeedata.cpp \
-    src/employeemodeltable.cpp \
-    src/employeeModelMaster.cpp \
-    src/shyftwrkwin.cpp
+    src/employeeModelMaster.cpp
 
 RESOURCES += qml.qrc
 
@@ -23,6 +21,4 @@ QTPLUGIN += QSQLMYSQL
 
 HEADERS += \
     src/employeedata.h \
-    src/employeemodeltable.h \
-    src/employeeModelMaster.h \
-    src/shyftwrkwin.h
+    src/employeeModelMaster.h

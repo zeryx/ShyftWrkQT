@@ -1,32 +1,51 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.2
-Rectangle{
-id: root
-radius: 5
-    TableView{
-        id: schedulerTableView
-        itemDelegate: tableDelegate
-        resources:
+import QtQuick.Layouts 1.1
+RowLayout
+{
+    id: root
+    spacing: 6
+    Component.onCompleted: {
+        var headers = headerList
+        var model = tableModel
+        var temp = []
+        for(var i=0; i<headers.length; i++)
         {
-            var headerData = headers
-            var temp = []
-            for(var i=0; i<headerData.length; i++)
-            {
-                var role  = headerData[i]
-                temp.push(columnComponent.createObject(schedulerTableView, { "role": role, "title": role}))
-                console.log("column #" + i + " is named : " + role);
-            }
-            return temp
+            var newModel = model[i]
+            console.log(headers[i] + " "+ i)
+
+            temp.push(dynamicListViews.createObject(root,
+                                                    {
+                                                        "model":newModel,
+                                                        "headerName":headers[i]
+                                                    }))
         }
-        model: baseTableModel
-        anchors.fill: root
+        var temp =  []
+        return temp
 
     }
-
     Component
     {
-        id: columnComponent
-        TableViewColumn{width: 220 }
+        id: dynamicListViews
+        ListView{
+            id: thisListView
+            delegate: tableDelegate
+            property string headerName
+            header: Rectangle{
+                width: 220
+                height: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "light blue"
+                Text{
+                    anchors.centerIn: parent
+                    text: thisListView.headerName
+                }
+
+            }
+
+            Layout.preferredHeight: root.height
+            Layout.preferredWidth: 220
+            spacing: 5
+        }
     }
 
 
@@ -34,39 +53,69 @@ radius: 5
         id: tableDelegate
         Rectangle{
             id: delRectangle
-            height: 250
-            z:0
+            radius: 6
+            color: "white"
+            height: 200
+            width: 150
             Clickable{
                 id: portraitText
-                source: portrait
+                source: model.portrait
                 smooth: true
                 antialiasing: true
                 anchors.top: parent.top
+                anchors.margins: 5
                 anchors.horizontalCenter: parent.horizontalCenter
-                height: 150
+                height: parent.height-70
                 fillMode: Image.PreserveAspectFit
                 overlayOpacity: 0.4
             }
             Text{
                 id: nameText
-                text: name
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: portraitText.bottom
+                text: model.name
             }
             Text{
                 id: positionText
                 anchors.top: nameText.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: position
+                text: model.position
             }
             Text{
                 id:scoreText
                 anchors.top: positionText.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: score
+                text: model.score
             }
+
         }
 
     }
+    TextInput{
+        objectName: "headerInput"
+        property string newHeader
+        signal newHeaderInput(string newHeader);
+        z: 1
+        id: replacableTextInput
+        anchors.left: parent.left
+        anchors.top: parent.top
+        height: 20
+        width: 40
+
+        BorderImage {
+            id: simpleBorder
+            source: "searchbox.jpg"
+            anchors.fill: parent
+
+            z: -1
+        }
+        activeFocusOnPress: true
+        onAccepted: {
+            newHeader = replacableTextInput.text
+            newHeaderInput(newHeader)
+            replacableTextInput.text ="";
+        }
+    }
+
 
 }

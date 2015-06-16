@@ -41,6 +41,8 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &parent = QModelIndex()) const;
 
+    QVariant headerData(int section, Qt::Orientation orientation = Qt::Horizontal, int role = Qt::DisplayRole) const;
+
 
 public:
 
@@ -56,21 +58,31 @@ public:
 
     EmployeeData* getPerson(size_t index);
 
+    void setHeaderData( const QString &value);
+
+    int headerSize();
+
+    QStringList headerList();
+
     const_iterator begin()const{return m_data.begin();}
 
     const_iterator end()const{return m_data.end();}
 
+public slots:
 
+    void setHeaderDataSlot(const QString &value);
 
 signals:
 
-    void nameChanged(QString& newname);
+    void updateMirrors(int rows, EmployeeModelMaster*);
 
-    void updateMirrors(int newRowCount, EmployeeModelMaster* master);
+    void nameChanged(QString& newname);
 
 protected:
 
     QHash<int, QByteArray> roleNames() const;
+
+    QHash<qint32, QString> headers;
 
     QSqlDatabase db;
 

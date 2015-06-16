@@ -60,8 +60,9 @@ Rectangle{
         }
     }
     MyAssets.ScheduleViewingPane{
-        width: parent.width-200
         height: parent.height - daySpinner.height
+        anchors.right: parent.right
+        anchors.left: parent.left
         anchors.bottom: parent.bottom
     }
 }

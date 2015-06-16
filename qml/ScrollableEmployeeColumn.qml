@@ -4,11 +4,6 @@ import "assets" as MyAssets
 
 Column{
     id: rootColumn
-    spacing: 2
-    function nassert(aId, a, bId, b){
-        console.log(aId + " equals: " + a + "\n"+ bId + " equals: " + b);
-        console.count("nassert called")
-    }
 
     MyAssets.Search{
         id: columnSearch
@@ -21,7 +16,7 @@ Column{
         height: parent.height-columnSearch.height
         ListView{
             id: myListView
-            model: searchFilteredModel
+            model: masterModel
             delegate: searchDelegate
             highlightFollowsCurrentItem: true
             spacing: 2

@@ -136,9 +136,9 @@ bool EmployeeModelMaster::pullFromSQL() //pulls from configured SQL server with 
 //        qDebug() <<"portrait is: " << baseURL.resolved(relative).toString();
         int Score = query.value(scoreField).toInt();
         this->addPerson(new EmployeeData(baseURL.resolved(relative), Name, Position, Score));
+        setHeaderData(Position);
     }
 
-    updateMirrors(this->rowCount(), this);
 
     return true;
 }
@@ -183,6 +183,41 @@ void EmployeeModelMaster::removePerson(int col)
     updateMirrors(this->rowCount(), this);
 }
 
+QVariant EmployeeModelMaster::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    Q_UNUSED(orientation);  // orientation and role are unused as this is strictly header data storage, and all headers are from position
+    Q_UNUSED(role);
+
+    if(section >= headers.size())
+        return QVariant();
+    return headers.value(section);
+}
+
+
+void EmployeeModelMaster::setHeaderData(const QString &value)
+{
+    for(int i=0; i<headers.size(); i++)
+    {
+        if(headers.value(i) == value)
+            return;
+    }
+    headers[headers.size()-1] = value; // this should "append" headers
+}
+
+int EmployeeModelMaster::headerSize()
+{
+    return headers.size();
+}
+
+void EmployeeModelMaster::setHeaderDataSlot(const QString &value)
+{
+    setHeaderData(value);
+}
+
+QStringList EmployeeModelMaster::headerList()
+{
+    return headers.values();
+}
 
 QHash<int, QByteArray> EmployeeModelMaster::roleNames() const
 {
