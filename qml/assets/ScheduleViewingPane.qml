@@ -11,15 +11,12 @@ RowLayout
         for(var i=0; i<headers.length; i++)
         {
             var newModel = model[i]
-            console.log(headers[i] + " "+ i)
-
             temp.push(dynamicListViews.createObject(root,
                                                     {
                                                         "model":newModel,
                                                         "headerName":headers[i]
                                                     }))
         }
-        var temp =  []
         return temp
 
     }
@@ -31,11 +28,13 @@ RowLayout
             delegate: tableDelegate
             property string headerName
             header: Rectangle{
-                width: 220
+                width: 100
                 height: 25
+                radius: 2
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "light blue"
                 Text{
+                    id: headerText
                     anchors.centerIn: parent
                     text: thisListView.headerName
                 }
@@ -43,7 +42,7 @@ RowLayout
             }
 
             Layout.preferredHeight: root.height
-            Layout.preferredWidth: 220
+            Layout.preferredWidth: 155
             spacing: 5
         }
     }
@@ -57,6 +56,7 @@ RowLayout
             color: "white"
             height: 200
             width: 150
+            z:1
             Clickable{
                 id: portraitText
                 source: model.portrait

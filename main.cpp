@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
         newColumn->setFilterRole(masterModel->positionRole);
         newColumn->setFilterCaseSensitivity(Qt::CaseInsensitive);
         newColumn->setDynamicSortFilter(true);
-        newColumn->setFilterRegExp(masterModel->headerData(i).toString());
+        newColumn->setFilterRegExp("^"+masterModel->headerData(i).toString());
 
         tableFilters.append(newColumn);
     }

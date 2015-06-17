@@ -3,42 +3,42 @@ import QtQuick.Controls 1.2
 import "assets" as MyAssets
 
 Column{
-    id: rootColumn
-
+    id:rootColumn
+    property alias listView: myListView
     MyAssets.Search{
         id: columnSearch
-        width: parent.width
+        width: rootColumn.width
         height: 25
+        z:12
     }
-    ScrollView{
-        id: myScrollView
-        frameVisible: true
-        height: parent.height-columnSearch.height
-        ListView{
+
+        ListView
+        {
             id: myListView
-            model: masterModel
+            model: searchFilteredModel
+            width: rootColumn.width
+            height: rootColumn.height-columnSearch.height
             delegate: searchDelegate
             highlightFollowsCurrentItem: true
             spacing: 2
-            highlight: Rectangle{
-                color:"transparent"
-                z:1
-                border.color: Qt.lighter('blue')
-                border.width: 1
-                radius:4
+            z:0
+            property var lastIndex;
+            onCurrentIndexChanged: {
+                if(lastIndex || myListView.currentIndex !==0){
+                    aAgLoader.timeToLoad(myListView.currentIndex)
+                    lastIndex = currentIndex
+                }
             }
-            highlightMoveDuration: 0
-
         }
-    }
 
     Component{
         id: searchDelegate
         Rectangle{
             id: delRectangle
             height: 250
-            z:0
             width: myListView.width
+            border.width: 2
+            border.color: myListView.currentIndex === index ? Qt.lighter("#0781D9") : "transparent"
             MyAssets.Clickable{
                 id: portraitText
                 source: portrait
@@ -72,6 +72,7 @@ Column{
                 text: score
             }
         }
-
     }
 }
+
+

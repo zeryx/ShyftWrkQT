@@ -188,7 +188,7 @@ QVariant EmployeeModelMaster::headerData(int section, Qt::Orientation orientatio
     Q_UNUSED(orientation);  // orientation and role are unused as this is strictly header data storage, and all headers are from position
     Q_UNUSED(role);
 
-    if(section >= headers.size())
+    if(section > headers.size())
         return QVariant();
     return headers.value(section);
 }
@@ -196,12 +196,12 @@ QVariant EmployeeModelMaster::headerData(int section, Qt::Orientation orientatio
 
 void EmployeeModelMaster::setHeaderData(const QString &value)
 {
-    for(int i=0; i<headers.size(); i++)
+    for(int i=0; i<=headers.size()-1; i++)
     {
         if(headers.value(i) == value)
             return;
     }
-    headers[headers.size()-1] = value; // this should "append" headers
+    headers[headers.size()] = value; // this should "append" headers
 }
 
 int EmployeeModelMaster::headerSize()
@@ -216,7 +216,12 @@ void EmployeeModelMaster::setHeaderDataSlot(const QString &value)
 
 QStringList EmployeeModelMaster::headerList()
 {
-    return headers.values();
+    QStringList temp;
+    for(int i=0; i<headers.size(); i++)
+    {
+        temp.append(headers.value(i));
+    }
+    return temp;
 }
 
 QHash<int, QByteArray> EmployeeModelMaster::roleNames() const

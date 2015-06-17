@@ -11,5 +11,8 @@
         <file>qml/assets/icons/arrow_right.svg</file>
         <file>qml/assets/searchbox.jpg</file>
         <file>qml/assets/ScheduleViewingPane.qml</file>
+        <file>qml/assets/Calendar.qml</file>
+        <file>qml/assets/EmployeeAAG.qml</file>
+        <file>qml/assets/ScrollBar.qml</file>
     </qresource>
 </RCC>

@@ -18,7 +18,7 @@ ApplicationWindow{
    title: qsTr("ShyftWrk")
     Rectangle{
         id: banner
-        height: 80
+        height: 65
         anchors.top: parent.top
         width: parent.width
         color: themeSecondary
@@ -51,11 +51,14 @@ ApplicationWindow{
     }
     ScrollableEmployeeColumn{
         id: employeeColumn
-        width: 200
+        width: 160
         height: parent.height-banner.height
         anchors.right: parent.right
         anchors.top: banner.bottom
+        z:-1
     }
+
+
     TabView{
         id: mainTabView
         anchors.top: banner.bottom
@@ -70,7 +73,7 @@ ApplicationWindow{
                 id:myShiftScheduler
                 width: mainTabView.width
                 anchors.top: parent.top
-                anchors.topMargin: 20
+                anchors.topMargin: 5
                 color: themePrimary
             }
         }
@@ -116,6 +119,23 @@ ApplicationWindow{
             }
             frame: Rectangle{ color: themePrimary}
             tabBar: Rectangle{ color: themePrimary}
+        }
+    }
+
+    Loader{
+        id: aAgLoader
+        signal timeToLoad(var index)
+        property var m_index
+        height: 350
+        width: 350
+        visible: status == Loader.Ready
+        anchors.right: employeeColumn.left
+        anchors.top: banner.bottom
+        anchors.topMargin: 35
+        asynchronous: true
+        onTimeToLoad: {
+            aAgLoader.source = "qrc:///qml/assets/EmployeeAAG.qml";
+            m_index = index === m_index ? m_index : index;
         }
     }
 }
