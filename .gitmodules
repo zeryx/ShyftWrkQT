@@ -1,0 +1,6 @@
+[submodule "qchart.js"]
+	path = qchart.js
+	url = git://github.com/jwintz/qchart.js.git
+[submodule "qml/jbQuick/Charts"]
+	path = qml/jbQuick/Charts
+	url = git://github.com/jwintz/qchart.js.git

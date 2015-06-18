@@ -124,18 +124,21 @@ ApplicationWindow{
 
     Loader{
         id: aAgLoader
-        signal timeToLoad(var index)
-        property var m_index
+        signal timeToLoad(var index, var name)
+        property variant m_index
+        property var m_name
         height: 350
         width: 350
-        visible: status == Loader.Ready
         anchors.right: employeeColumn.left
         anchors.top: banner.bottom
         anchors.topMargin: 35
         asynchronous: true
+        source: "qrc:///qml/assets/EmployeeAAG.qml"
+        visible: false
         onTimeToLoad: {
-            aAgLoader.source = "qrc:///qml/assets/EmployeeAAG.qml";
+            aAgLoader.visible = true;
             m_index = index === m_index ? m_index : index;
+            m_name = name === m_name ? m_name : name;
         }
     }
 }

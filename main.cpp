@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
         newColumn->setFilterCaseSensitivity(Qt::CaseInsensitive);
         newColumn->setDynamicSortFilter(true);
         newColumn->setFilterRegExp("^"+masterModel->headerData(i).toString());
-
         tableFilters.append(newColumn);
     }
     engine.rootContext()->setContextProperty(QStringLiteral("tableModel"), QVariant::fromValue(tableFilters));

@@ -22,12 +22,13 @@ Column{
             highlightFollowsCurrentItem: true
             spacing: 2
             z:0
-            property var lastIndex;
+            property int indexChangeCtr: 0
+            property string name
             onCurrentIndexChanged: {
-                if(lastIndex || myListView.currentIndex !==0){
-                    aAgLoader.timeToLoad(myListView.currentIndex)
-                    lastIndex = currentIndex
+                if(indexChangeCtr != 0){
+                    aAgLoader.timeToLoad(myListView.currentIndex, name)
                 }
+                indexChangeCtr++
             }
         }
 
@@ -41,7 +42,7 @@ Column{
             border.color: myListView.currentIndex === index ? Qt.lighter("#0781D9") : "transparent"
             MyAssets.Clickable{
                 id: portraitText
-                source: portrait
+                source: model.portrait
                 smooth: true
                 antialiasing: true
                 anchors.top: parent.top
@@ -50,12 +51,13 @@ Column{
                 fillMode: Image.PreserveAspectFit
                 overlayOpacity: 0.4
                 onClicked: {
+                    myListView.name = model.name;
                     myListView.currentIndex = index;
                 }
             }
             Text{
                 id: nameText
-                text: name
+                text: model.name
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: portraitText.bottom
             }
@@ -63,13 +65,13 @@ Column{
                 id: positionText
                 anchors.top: nameText.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: position
+                text: model.position
             }
             Text{
                 id:scoreText
                 anchors.top: positionText.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: score
+                text: model.score
             }
         }
     }
