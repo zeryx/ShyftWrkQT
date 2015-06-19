@@ -22,24 +22,19 @@ Column{
             highlightFollowsCurrentItem: true
             spacing: 2
             z:0
-            property int indexChangeCtr: 0
-            property string name
-            onCurrentIndexChanged: {
-                if(indexChangeCtr != 0){
-                    aAgLoader.timeToLoad(myListView.currentIndex, name)
-                }
-                indexChangeCtr++
-            }
+            signal unHideAAG(var index, var name, var score)
+            onUnHideAAG: {aAgLoader.timeToLoad(index, name, score)}
         }
 
     Component{
         id: searchDelegate
         Rectangle{
             id: delRectangle
-            height: 250
+            height: 220
             width: myListView.width
             border.width: 2
             border.color: myListView.currentIndex === index ? Qt.lighter("#0781D9") : "transparent"
+            Rectangle{id: background; anchors.fill: parent; color: Qt.lighter(Qt.lighter("#5caa15")); z:0}
             MyAssets.Clickable{
                 id: portraitText
                 source: model.portrait
@@ -51,27 +46,30 @@ Column{
                 fillMode: Image.PreserveAspectFit
                 overlayOpacity: 0.4
                 onClicked: {
-                    myListView.name = model.name;
-                    myListView.currentIndex = index;
+                    myListView.unHideAAG(index, model.name, model.score)
+                    myListView.currentIndex = index
                 }
             }
+
             Text{
                 id: nameText
-                text: model.name
+                text:{ qsTr(model.name)}
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: portraitText.bottom
             }
+
             Text{
                 id: positionText
+                text: {qsTr(model.position)}
                 anchors.top: nameText.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: model.position
             }
+
             Text{
                 id:scoreText
+                text: model.score
                 anchors.top: positionText.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: model.score
             }
         }
     }

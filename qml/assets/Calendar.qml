@@ -39,6 +39,10 @@ Text{
             onClicked: {
                 currentlySelectedDate = date;
             }
+            onDoubleClicked: {
+                currentlySelectedDate = date;
+                calendarLoader.visible = false
+            }
         }
     }
 }

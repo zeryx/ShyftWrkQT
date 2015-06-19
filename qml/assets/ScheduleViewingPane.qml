@@ -36,7 +36,7 @@ RowLayout
                 Text{
                     id: headerText
                     anchors.centerIn: parent
-                    text: thisListView.headerName
+                    text: qsTr(thisListView.headerName)
                 }
 
             }
@@ -73,13 +73,13 @@ RowLayout
                 id: nameText
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: portraitText.bottom
-                text: model.name
+                text: qsTr(model.name)
             }
             Text{
                 id: positionText
                 anchors.top: nameText.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: model.position
+                text: qsTr(model.position)
             }
             Text{
                 id:scoreText
@@ -91,31 +91,4 @@ RowLayout
         }
 
     }
-    TextInput{
-        objectName: "headerInput"
-        property string newHeader
-        signal newHeaderInput(string newHeader);
-        z: 1
-        id: replacableTextInput
-        anchors.left: parent.left
-        anchors.top: parent.top
-        height: 20
-        width: 40
-
-        BorderImage {
-            id: simpleBorder
-            source: "searchbox.jpg"
-            anchors.fill: parent
-
-            z: -1
-        }
-        activeFocusOnPress: true
-        onAccepted: {
-            newHeader = replacableTextInput.text
-            newHeaderInput(newHeader)
-            replacableTextInput.text ="";
-        }
-    }
-
-
 }

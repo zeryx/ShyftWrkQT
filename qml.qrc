@@ -14,5 +14,11 @@
         <file>qml/assets/Calendar.qml</file>
         <file>qml/assets/EmployeeAAG.qml</file>
         <file>qml/assets/ScrollBar.qml</file>
+        <file>src/private/qabstractitemmodel_p.h</file>
+        <file>src/private/qabstractproxymodel_p.h</file>
+        <file>src/employeedata.cpp</file>
+        <file>src/employeedata.h</file>
+        <file>src/employeeModelMaster.cpp</file>
+        <file>src/employeeModelMaster.h</file>
     </qresource>
 </RCC>

@@ -6,11 +6,6 @@
 class EmployeeData : public QObject
 {
     Q_OBJECT
-//    Q_PROPERTY(QUrl portrait READ portrait WRITE setPortrait NOTIFY portraitChanged)
-//    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-//    Q_PROPERTY(QString position READ position WRITE setPosition NOTIFY positionChanged)
-//    Q_PROPERTY(QVariant score READ score WRITE setScore NOTIFY scoreChanged)
-
 public:
 
     EmployeeData();

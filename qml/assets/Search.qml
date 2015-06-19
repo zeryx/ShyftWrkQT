@@ -27,7 +27,7 @@ FocusScope {
         anchors.fill: parent
         anchors.leftMargin: 8
         verticalAlignment: Text.AlignVCenter
-        text: "Who're you looking for?"
+        text: "Who are you looking for?"
         color:"grey"
         font.family: "abel"
     }
