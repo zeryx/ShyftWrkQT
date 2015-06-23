@@ -1,24 +1,18 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/EmployeeEditor.qml</file>
-        <file>qml/EmployeeViewer.qml</file>
         <file>qml/ScrollableEmployeeColumn.qml</file>
         <file>qml/ShiftScheduler.qml</file>
         <file>qml/ShyftWrk.qml</file>
         <file>qml/assets/Clickable.qml</file>
         <file>qml/assets/Search.qml</file>
-        <file>qml/assets/icons/arrow_left.svg</file>
-        <file>qml/assets/icons/arrow_right.svg</file>
         <file>qml/assets/searchbox.jpg</file>
         <file>qml/assets/ScheduleViewingPane.qml</file>
         <file>qml/assets/Calendar.qml</file>
         <file>qml/assets/EmployeeAAG.qml</file>
         <file>qml/assets/ScrollBar.qml</file>
-        <file>src/private/qabstractitemmodel_p.h</file>
-        <file>src/private/qabstractproxymodel_p.h</file>
-        <file>src/employeedata.cpp</file>
-        <file>src/employeedata.h</file>
-        <file>src/employeeModelMaster.cpp</file>
-        <file>src/employeeModelMaster.h</file>
+        <file>qml/MenuWidgets/LoginWindow.qml</file>
+        <file>qml/MenuWidgets/MainWindow.qml</file>
+        <file>qml/MenuWidgets/EditorWindow.qml</file>
+        <file>qml/assets/close_button.zvg</file>
     </qresource>
 </RCC>

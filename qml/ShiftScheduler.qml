@@ -21,6 +21,7 @@ Rectangle{
         z:1
         anchors.right: parent.right
         anchors.left: parent.left
+        anchors.leftMargin: 30
         anchors.bottom: parent.bottom
     }
 }

@@ -30,24 +30,26 @@ QVariant EmployeeModelMaster::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= m_data.count())
         return QVariant();
 
-
     const EmployeeData *data = m_data[index.row()];
-    if (role == nameRole)
+    switch(role)
+    {
+    case nameRole:
         return data->name();
-    else if (role == portraitRole)
+    case portraitRole:
         return data->portrait();
-    else if(role == positionRole)
+    case positionRole:
         return data->position();
-    else if(role == scoreRole)
+    case scoreRole:
         return data->score();
-    else
+    default:
         return QVariant();
+    }
 }
 
 bool EmployeeModelMaster::setData(const QModelIndex &index, QVariant &value, int role)
 {
     if(index.isValid() && index.row() <= this->rowCount() && index.row() >= 0)
-    {
+        return false;
 
         switch(role)
         {
@@ -70,10 +72,6 @@ bool EmployeeModelMaster::setData(const QModelIndex &index, QVariant &value, int
         emit dataChanged(index, index);
 
         return true;
-    }
-    qDebug() << "data wasn't set!";
-
-    return false;
 }
 
 Qt::ItemFlags EmployeeModelMaster::flags(const QModelIndex &index) const
@@ -92,13 +90,9 @@ void EmployeeModelMaster::addPerson(EmployeeData* person)
         qDebug() << "name already exists";
         return;
     }
-
     beginInsertRows(QModelIndex(), this->rowCount(), this->rowCount());
-
     m_data << person;
-
     endInsertRows();
-
 }
 
 void EmployeeModelMaster::configSQL()
@@ -132,14 +126,10 @@ bool EmployeeModelMaster::pullFromSQL() //pulls from configured SQL server with 
         QString Name = query.value(nameField).toString();
         QString Position = query.value(positionField).toString();
         QUrl relative = query.value(portraitField).toUrl();
-
-//        qDebug() <<"portrait is: " << baseURL.resolved(relative).toString();
         int Score = query.value(scoreField).toInt();
         this->addPerson(new EmployeeData(baseURL.resolved(relative), Name, Position, Score));
         setHeaderData(Position);
     }
-
-
     return true;
 }
 
@@ -160,9 +150,6 @@ bool EmployeeModelMaster::addPersonToSql( EmployeeData * Person)
         {
             return false;
         }
-
-        updateMirrors(this->rowCount(), this);
-
         return true;
 }
 
@@ -180,7 +167,6 @@ void EmployeeModelMaster::removePerson(int col)
 
     endRemoveRows();
 
-    updateMirrors(this->rowCount(), this);
 }
 
 QVariant EmployeeModelMaster::headerData(int section, Qt::Orientation orientation, int role) const
@@ -238,3 +224,8 @@ EmployeeData* EmployeeModelMaster::getPerson(size_t index)
     return m_data[index];
 }
 
+void EmployeeModelMaster::connectionsPostLogin()
+{
+    QObject *search = m_win->findChild<QObject*>("search");
+    QObject::connect(search, SIGNAL(hasText(QString)), m_proxy, SLOT(setFilterRegExp(QString)));
+}

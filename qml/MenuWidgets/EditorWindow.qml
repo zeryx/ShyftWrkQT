@@ -1,35 +1,92 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.2
 import QtQuick.Dialogs 1.2
-Rectangle{
+Item{
     id: root
-    anchors.fill: parent
-    color: "#ffffff"
+    opacity: 1
+    property url cachedImageSource
+    Button{
+        anchors.top: root.top
+        anchors.topMargin: 45
+        anchors.right: root.right
+        anchors.rightMargin: 10
+        height: 40
+        width: 75
+        onClicked: {
+            var returnString = "MenuWidgets/MainWindow.qml"
+            mainWindowContext.swapApps(returnString)
+        }
+        Text{
+            anchors.centerIn: parent
+            text: "Back"
+            font.family: "abel"
+        }
+    }
 
     Loader{
         id: imageImportLoader
         signal fileChosen
-        sourceComponent: portraitImport
-        active: false
-        asynchronous: true
-        visible: status == Loader.Ready
-        onFileChosen: {active=true;}
+        sourceComponent: placeholderComponent
+        onFileChosen: {
+            active = false;
+            sourceComponent = portraitComponent
+            active=true;
+        }
         anchors.top: root.top
         anchors.topMargin: 50
         anchors.horizontalCenter: root.horizontalCenter
-        height: 0
-        width: 0
+        width: 200
+        height: 200
+        Component.onCompleted: {
+            if(mainWindowContext.m_model)
+            {
+                active = false;
+                root.cachedImageSource = mainWindowContext.m_model.portrait
+                sourceComponent = cachedComponent;
+                active = true;
+                nameField.text = mainWindowContext.m_model.name
+                positionsField.text = mainWindowContext.m_model.position
+            }
+        }
     }
     Component{
-        id: portraitImport
+        id: portraitComponent
         Image{
             id: portraitImage
+            anchors.fill: parent
             antialiasing: true
             cache: true
-            fillMode: Image.PreserveAspectFit
+            fillMode: Image.Stretch
             source:fileDialog.fileUrl
             smooth: true
-            Component.onCompleted: {root.state = 'expand'}
+        }
+    }
+
+    Component{
+        id: placeholderComponent
+        BorderImage {
+            id: frame
+            source: "../assets/searchbox.jpg"
+            anchors.fill: parent
+            border.left: 5; border.top: 5
+            border.right: 5; border.bottom: 5
+            Text{
+                anchors.centerIn: parent
+                text: qsTr("drag employee here \nto edit")
+            }
+        }
+    }
+
+    Component{
+        id: cachedComponent
+        Image{
+            id: cachedImage
+            anchors.fill: parent
+            antialiasing: true
+            cache: true
+            fillMode: Image.Stretch
+            source:root.cachedImageSource
+            smooth: true
         }
     }
 
@@ -50,7 +107,6 @@ Rectangle{
         width: 300
         placeholderText: qsTr("Enter Name")
         font.family: "abel"
-        opacity: 0
     }
     TextField{
         id: positionsField
@@ -60,7 +116,6 @@ Rectangle{
         width: 300
         placeholderText: qsTr("Enter Positions worked")
         font.family: "abel"
-        opacity: 0
     }
 
     Button{
@@ -75,7 +130,6 @@ Rectangle{
         signal addPerson(var portrait, var name, var position, var resturant)
         height:40
         width:100
-        opacity: 0
         Text{
             anchors.centerIn: parent
             text: qsTr("Accept")
@@ -88,7 +142,6 @@ Rectangle{
                 m_name = nameField.text;
                 m_positions = positionsField.text
                 m_portrait = fileDialog.fileUrl
-                acceptButton.addPerson(m_portrait, m_name, m_positions)
                 console.log("field was clicked")
             }
         }
@@ -98,21 +151,12 @@ Rectangle{
     FileDialog{
         id: fileDialog
         signal fileChosen
-        title: "please select applicable portrait image"
+        title: qsTr("please select applicable portrait image")
         nameFilters: ["Image Files (*.jpg *.png *.gif)", "All files (*)"]
         onAccepted: { imageImportLoader.fileChosen(); fileDialog.close();}
         onRejected: {fileDialog.close()}
 
     }
 
-    states: State{
-        name: "expand"
-        PropertyChanges {target: imageImportLoader; height: 275; width: 150 }
-    }
-    transitions: Transition {
-        from: "*"; to: "expand"
-        NumberAnimation{properties: "height, width"; easing.type: Easing.InQuad; duration: 300}
-        NumberAnimation { targets: [positionsField, nameField, acceptButton]; properties: "opacity"; from:0; to:1; duration: 1000 }
-    }
 }
 

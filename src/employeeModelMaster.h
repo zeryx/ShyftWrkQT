@@ -23,7 +23,7 @@ public:
 
 public:
 
-    enum EmployeeModelMasterDataRole
+    enum EmployeeModelMasterDataRole // will add more roles
     {
         nameRole=Qt::UserRole+1,
         positionRole,
@@ -72,9 +72,9 @@ public slots:
 
     void setHeaderDataSlot(const QString &value);
 
-signals:
+    void connectionsPostLogin(); //to be migrated to a new class
 
-    void updateMirrors(int rows, EmployeeModelMaster*);
+signals:
 
     void nameChanged(QString& newname);
 
@@ -89,6 +89,10 @@ protected:
 public:
 
     QList<EmployeeData*> m_data;
+
+    QSortFilterProxyModel* m_proxy; // these will be moved to a new class
+
+    QObject* m_win;
 
 
 };

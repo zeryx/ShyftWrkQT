@@ -6,6 +6,7 @@ FocusScope {
     objectName: "search"
     signal hasText(string searchText);
     property string searchText;
+    property string textPromptInfo;
     property string oldText: ""
     BorderImage {
         id: searchBorder
@@ -27,7 +28,7 @@ FocusScope {
         anchors.fill: parent
         anchors.leftMargin: 8
         verticalAlignment: Text.AlignVCenter
-        text: "Who are you looking for?"
+        text: textPromptInfo
         color:"grey"
         font.family: "abel"
     }

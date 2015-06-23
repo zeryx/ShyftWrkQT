@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
-    engine.addImportPath(QStringLiteral("../ShyftWrkQT/qml/assets"));
+    engine.addImportPath(QStringLiteral("../ShyftWrkQT/qml"));
 
     EmployeeModelMaster* masterModel = new EmployeeModelMaster();
     QSortFilterProxyModel *searchFilteredModel = new QSortFilterProxyModel();
@@ -40,9 +40,10 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:///qml/ShyftWrk.qml")));
 
     QObject *win = engine.rootObjects()[0];
-    QObject *search = win->findChild<QObject*>("search");
-
-    QObject::connect(search, SIGNAL(hasText(QString)), searchFilteredModel, SLOT(setFilterRegExp(QString)));
+    masterModel->m_win = win;
+    masterModel->m_proxy = searchFilteredModel;
+    QObject *mainAppStart = win->findChild<QObject*>("mainWindowContext");
+    QObject::connect(mainAppStart, SIGNAL(mainAppStarted()), masterModel, SLOT(connectionsPostLogin()));
 
     return app.exec();
 }
