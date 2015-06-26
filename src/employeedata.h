@@ -2,31 +2,57 @@
 #define EMPLOYEEDATA_H
 #include <QObject>
 #include <QUrl>
+#include <QDebug>
 #include <QVariant>
+#include "schedulerdata.h"
 class EmployeeData : public QObject
 {
     Q_OBJECT
-public:
+public: //-- gets
 
     EmployeeData();
 
-    EmployeeData(const QUrl &portrait, const QString &name, const QString &position, const QVariant &score);
+    EmployeeData(const QUrl &portrait, const QString &name, const QString &positions);
 
     QUrl portrait()const;
 
     QString name()const;
 
-    QString position()const;
+    QString positions()const;
 
-    QVariant score()const;
+    int getShift(QDate &date)const;
+
+    float getPerformance(QDate &date)const;
+
+    QString getPositionScheduled(QDate &date)const;
+
+    QMap<QString, float> getSynergy(QDate &date)const;
+
+    float getSynergyWith(QDate &date, QString name)const;
+
+    QList<SchedulerData*> getSchedulerDataList()const;
+
+    SchedulerData* getScheduleFor(QDate &date)const;
+
+public: //-- sets
 
     void setPortrait(QUrl portrait);
 
     void setName(QString name);
 
-    void setPosition(QString position);
+    void setPositions(QString positions);
 
-    void setScore(QVariant score);
+    void setShift(int& newShift, QDate& date);
+
+    void setPerformance(float& newPerformance, QDate& date);
+
+    void setPositionScheduled(QString& newPositionScheduled, QDate& date);
+
+    void setSynergy(QMap<QString, float>& newSynergy, QDate& date);
+
+    void setSchedulerData(QList<SchedulerData*> list);
+
+    void setSchedulerData(QDate& date, int& shift, QString& positionScheduled, float& performance, QMap<QString, float> Synergy);
 
 signals:
 
@@ -34,16 +60,17 @@ signals:
 
     void nameChanged();
 
-    void positionChanged();
+    void positionsChanged();
 
-    void scoreChanged();
+    void schedulerDataChanged();
+
 
 protected:
 
-    QUrl m_portrait;
-    QString m_name;
-    QString m_position;
-    QVariant m_score;
+    QUrl thisPortrait;
+    QString thisName;
+    QString thisPositions;
+    QList<SchedulerData*> thisSchedulerData;
 };
 
 #endif // EMPLOYEEDATA_H

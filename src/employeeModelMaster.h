@@ -28,7 +28,9 @@ public:
         nameRole=Qt::UserRole+1,
         positionRole,
         portraitRole,
-        scoreRole
+        avgShiftsRole,
+        synergyRole,
+        avgPerformanceRole,
     };
     //virtual inherited members from QAbstractTableModel
 public:

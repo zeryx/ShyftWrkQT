@@ -64,14 +64,9 @@ ApplicationWindow{
         function swapApps(source, model)
         {
             if(model)
-            {
                 m_model = model
-            }
             else
-            {
                 m_model = 0
-            }
-
             mainLoader.visible = false
             mainLoader.active = false
             mainLoader.source = source

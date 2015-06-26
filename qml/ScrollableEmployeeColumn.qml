@@ -13,38 +13,46 @@ Column{
         z:12
     }
 
-        ListView
-        {
-            id: myListView
-            model: searchFilteredModel
-            width: rootColumn.width
-            height: rootColumn.height-columnSearch.height
-            delegate: searchDelegate
-            highlightFollowsCurrentItem: true
-            spacing: 2
-            z:0
+    ListView
+    {
+        id: myListView
+        model: searchFilteredModel
+        width: rootColumn.width
+        height: rootColumn.height-columnSearch.height
+        delegate: searchDelegate
+        spacing: 2
+        focus: true
+        z:0
 
-            property int dragItemIndex: -1
-            signal unHideAAG(var index, var name, var score)
-            onUnHideAAG: {aAgLoader.timeToLoad(index, name, score)}
+        highlight: Rectangle {
+            width: 180; height: 40
+            color: "lightsteelblue"; radius: 5
+            }
 
-            Menu{
-                id: rightclickMenu
-                property var m_model
-                signal passItem(var model)
-                onPassItem: {m_model = model}
-                MenuItem{
-                    text:qsTr("edit")
-                    signal ready
-                    property var editorComponent
 
-                    onTriggered: {
-                        var editorWindowString = "MenuWidgets/EditorWindow.qml"
-                        mainWindowContext.swapApps(editorWindowString, rightclickMenu.m_model)
-                    }
+        Menu{
+            id: rightclickMenu
+            property var m_model
+            signal passItem(var model)
+            onPassItem: {m_model = model}
+            MenuItem{
+                text:qsTr("View")
+                onTriggered: {
+                    var viewerComponent = "MenuWidgets/ViewerWindow.qml"
+                    mainWindowContext.swapApps(viewerComponent, rightclickMenu.m_model)
+                }
+            }
+
+            MenuItem{
+                text:qsTr("Edit")
+                property string editorComponent
+                onTriggered: {
+                    editorComponent = "MenuWidgets/EditorWindow.qml"
+                    mainWindowContext.swapApps(editorComponent, rightclickMenu.m_model)
                 }
             }
         }
+    }
 
     Component{
         id: searchDelegate
@@ -63,18 +71,18 @@ Column{
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
                 height: 150
-                fillMode: Image.PreserveAspectFit
+                width: 150
+                fillMode: Image.PreserveAspectCrop
             }
             MouseArea{
                 id: searchDelegateMouseArea
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
-                onClicked:{
-                    if(mouse.button === Qt.LeftButton){
-                            myListView.unHideAAG(index, model.name, model.score)
-                            myListView.currentIndex = index
-                        }
-                    else{ // if right mouse button clicked
+                onReleased:{
+                    if(mouse.button === Qt.LeftButton)
+                        myListView.currentIndex = index
+                    else if(mouse.button === Qt.RightButton)
+                    {
                         rightclickMenu.passItem(model)
                         rightclickMenu.popup()
                     }

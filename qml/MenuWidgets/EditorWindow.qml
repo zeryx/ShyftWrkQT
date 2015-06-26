@@ -1,21 +1,35 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.2
 import QtQuick.Dialogs 1.2
+import "../"
 Item{
     id: root
     opacity: 1
     property url cachedImageSource
+    ScrollableEmployeeColumn{
+        id: employeeColumn
+        width: 160
+        height: parent.height
+        anchors.right: parent.right
+        anchors.top: parent.top
+        z:-1
+    }
+
     Button{
         anchors.top: root.top
         anchors.topMargin: 45
-        anchors.right: root.right
+        anchors.right: employeeColumn.left
         anchors.rightMargin: 10
         height: 40
         width: 75
-        onClicked: {
-            var returnString = "MenuWidgets/MainWindow.qml"
-            mainWindowContext.swapApps(returnString)
+        MouseArea{
+            anchors.fill: parent
+            onReleased: {
+                var returnString = "MenuWidgets/MainWindow.qml"
+                mainWindowContext.swapApps(returnString)
+            }
         }
+
         Text{
             anchors.centerIn: parent
             text: "Back"
@@ -49,6 +63,7 @@ Item{
             }
         }
     }
+
     Component{
         id: portraitComponent
         Image{
@@ -96,18 +111,22 @@ Item{
         anchors.top: imageImportLoader.bottom
         anchors.topMargin: 50
         text: qsTr("Browse for image")
-        onClicked: fileDialog.open()
+        MouseArea{
+            anchors.fill: parent
+            onReleased: fileDialog.open()
+        }
     }
 
     TextField{
         id: nameField
         anchors.verticalCenter: imageImportLoader.verticalCenter
-        anchors.right: root.right
+        anchors.right: employeeColumn.left
         anchors.rightMargin: 25
         width: 300
         placeholderText: qsTr("Enter Name")
         font.family: "abel"
     }
+
     TextField{
         id: positionsField
         anchors.top: nameField.bottom
@@ -134,19 +153,20 @@ Item{
             anchors.centerIn: parent
             text: qsTr("Accept")
             font.family: "abel"
-
         }
-        onClicked: {
-            if(positionsField.text.length > 0 && nameField.text.length > 0 && imageImportLoader.active === true) // if every field has text
-            {
-                m_name = nameField.text;
-                m_positions = positionsField.text
-                m_portrait = fileDialog.fileUrl
-                console.log("field was clicked")
+        MouseArea{
+            anchors.fill: parent
+            onClicked: {
+                if(positionsField.text.length > 0 && nameField.text.length > 0 && imageImportLoader.active === true) // if every field has text
+                {
+                    m_name = nameField.text;
+                    m_positions = positionsField.text
+                    m_portrait = fileDialog.fileUrl
+                    console.log("field was clicked")
+                }
             }
         }
     }
-
 
     FileDialog{
         id: fileDialog
@@ -155,8 +175,6 @@ Item{
         nameFilters: ["Image Files (*.jpg *.png *.gif)", "All files (*)"]
         onAccepted: { imageImportLoader.fileChosen(); fileDialog.close();}
         onRejected: {fileDialog.close()}
-
     }
-
 }
 

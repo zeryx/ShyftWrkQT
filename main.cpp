@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
         newColumn->setFilterRegExp("^"+masterModel->headerData(i).toString());
         tableFilteredModel.append(newColumn);
     }
+
     engine.rootContext()->setContextProperty(QStringLiteral("tableModel"), QVariant::fromValue(tableFilteredModel));
     engine.rootContext()->setContextProperty(QStringLiteral("masterModel"), masterModel);
     engine.rootContext()->setContextProperty(QStringLiteral("searchFilteredModel"), searchFilteredModel);

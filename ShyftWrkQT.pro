@@ -7,7 +7,8 @@ macx:CONFIG -= app_bundle
 
 SOURCES += main.cpp \
     src/employeedata.cpp \
-    src/employeeModelMaster.cpp
+    src/employeeModelMaster.cpp \
+    src/schedulerdata.cpp
 
 RESOURCES += qml.qrc
 
@@ -19,5 +20,6 @@ include(deployment.pri)
 QTPLUGIN += QSQLMYSQL
 
 HEADERS += \
+    src/employeeModelMaster.h \
     src/employeedata.h \
-    src/employeeModelMaster.h
+    src/schedulerdata.h

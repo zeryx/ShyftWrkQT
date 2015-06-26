@@ -26,7 +26,7 @@ Text{
         id: sDayButtonMouseArea
         //anchor all sides of the mouse area to fill the rectangle
         anchors.fill: parent
-        onClicked: {
+        onReleased: {
             calendarLoader.visible = (calendarLoader.visible === false ? true : false)
         }
     }

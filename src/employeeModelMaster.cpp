@@ -38,9 +38,7 @@ QVariant EmployeeModelMaster::data(const QModelIndex &index, int role) const
     case portraitRole:
         return data->portrait();
     case positionRole:
-        return data->position();
-    case scoreRole:
-        return data->score();
+        return data->positions();
     default:
         return QVariant();
     }
@@ -60,11 +58,8 @@ bool EmployeeModelMaster::setData(const QModelIndex &index, QVariant &value, int
             m_data[index.row()]->setPortrait(value.toString());
             break;
         case positionRole:
-            m_data[index.row()]->setPosition(value.toString());
-            break;
-        case scoreRole:
-            m_data[index.row()]->setScore(value.toString());
-            break;
+            m_data[index.row()]->setPositions(value.toString());
+            break;            
         default:
             return false;
         }
@@ -119,15 +114,13 @@ bool EmployeeModelMaster::pullFromSQL() //pulls from configured SQL server with 
     int nameField = query.record().indexOf("Name");
     int positionField = query.record().indexOf("Position");
     int portraitField = query.record().indexOf("Portrait");
-    int scoreField = query.record().indexOf("Individual_Performance");
     QUrl baseURL("http://shyftwrk.com:80");
 
     while(query.next()){
         QString Name = query.value(nameField).toString();
         QString Position = query.value(positionField).toString();
         QUrl relative = query.value(portraitField).toUrl();
-        int Score = query.value(scoreField).toInt();
-        this->addPerson(new EmployeeData(baseURL.resolved(relative), Name, Position, Score));
+        this->addPerson(new EmployeeData(baseURL.resolved(relative), Name, Position));
         setHeaderData(Position);
     }
     return true;
@@ -137,14 +130,12 @@ bool EmployeeModelMaster::addPersonToSql( EmployeeData * Person)
 {
         QSqlQuery query(db);
         query.prepare("INSERT INTO `Employees` (id, Name, Position, Portrait, Individual_Performance, Interpersonal_Performance)"
-                        "Values (:id, :Name, :Position, :Portrait, :Individual_Performance, :Interpersonal_Performance)");
+                        "Values (:id, :Name, :Position, :Portrait)");
 
         query.bindValue(":id", QVariant()); //QVariant() == NULL, which tells mysql to auto_inc
         query.bindValue(":Name", Person->name());
-        query.bindValue(":Position", Person->position());
+        query.bindValue(":Position", Person->positions());
         query.bindValue(":Portrait", Person->portrait());
-        query.bindValue(":Individual_Performance", Person->score()); // dummy values for now
-        query.bindValue(":Interpersonal_Performance", ""); //unsused for now
         qDebug()<<"person added to database? "<<query.exec();
         if(!query.isValid())
         {
@@ -216,7 +207,9 @@ QHash<int, QByteArray> EmployeeModelMaster::roleNames() const
     roles[nameRole] = "name";
     roles[portraitRole] = "portrait";
     roles[positionRole] = "position";
-    roles[scoreRole] = "score";
+    roles[avgPerformanceRole] = "avgPerformance";
+    roles[synergyRole] = "synergy";
+    roles[avgShiftsRole] = "avgShifts";
     return roles;
 }
 EmployeeData* EmployeeModelMaster::getPerson(size_t index)

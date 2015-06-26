@@ -4,62 +4,199 @@ EmployeeData::EmployeeData()
 {
 }
 
-EmployeeData::EmployeeData(const QUrl &portrait, const QString &name, const QString &position, const QVariant &score)
+EmployeeData::EmployeeData(const QUrl &portrait, const QString &name, const QString &position)
 {
     this->setPortrait(portrait);
     this->setName(name);
-    this->setPosition(position);
-    this->setScore(score);
+    this->setPositions(position);
 }
 
-
+//==-- gets
 QUrl EmployeeData::portrait() const
 {
-return m_portrait;
+    return thisPortrait;
 }
 
 QString EmployeeData::name() const
 {
-    return m_name;
+    return thisName;
 }
 
-QString EmployeeData::position() const
+QString EmployeeData::positions() const
 {
-    return m_position;
+    return thisPositions;
 }
 
-QVariant EmployeeData::score() const
+int EmployeeData::getShift(QDate &date) const
 {
-    return m_score;
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            return thisSchedulerData[i]->shift();
+        }
+    }
+    qDebug()<<"the date was out of scope";
+    return -1;
 }
 
+float EmployeeData::getPerformance(QDate &date) const
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            return thisSchedulerData[i]->performance();
+        }
+    }
+    qDebug()<<"the date was out of scope";
+    return -1;
+}
+
+QString EmployeeData::getPositionScheduled(QDate &date) const
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            return thisSchedulerData[i]->positionScheduled();
+        }
+    }
+    qDebug()<<"the date was out of scope";
+    QString null;
+    return null;
+}
+
+QMap<QString, float> EmployeeData::getSynergy(QDate &date) const
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            return thisSchedulerData[i]->synergy();
+        }
+    }
+    qDebug()<<"the date was out of scope";
+    QMap<QString, float> null;
+    return null;
+}
+
+float EmployeeData::getSynergyWith(QDate &date, QString name) const
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            return thisSchedulerData[i]->synergyWith(name);
+        }
+    }
+    qDebug()<<"the date was out of scope";
+    return -1;
+}
+
+QList<SchedulerData*> EmployeeData::getSchedulerDataList() const
+{
+    return thisSchedulerData;
+}
+
+SchedulerData* EmployeeData::getScheduleFor(QDate &date) const
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            return thisSchedulerData[i];
+        }
+    }
+    qDebug()<<"the date was out of scope";
+    SchedulerData* null;
+    return null;
+}
+
+//==-- sets
 void EmployeeData::setPortrait(QUrl portrait)
 {
-    if(m_portrait != portrait){
-        m_portrait = portrait;
+    if(thisPortrait != portrait){
+        thisPortrait = portrait;
         emit portraitChanged();
     }
 }
 
 void EmployeeData::setName(QString name)
 {
-    if(m_name != name){
-        m_name = name;
+    if(thisName != name){
+        thisName = name;
         emit nameChanged();
     }
 }
 
-void EmployeeData::setPosition(QString position)
+void EmployeeData::setPositions(QString positions)
 {
-    if(m_position != position){
-        m_position = position;
-        emit positionChanged();
+    if(thisPositions != positions){
+        thisPositions = positions;
+        emit positionsChanged();
     }
 }
 
-void EmployeeData::setScore(QVariant n_score){
-    if(m_score != n_score){
-        m_score = n_score;
-        emit scoreChanged();
+void EmployeeData::setShift(int &newShift, QDate &date)
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            thisSchedulerData[i]->setShift(newShift);
+        }
     }
+    qDebug()<<"the date was out of scope";
 }
+
+void EmployeeData::setPerformance(float &newPerformance, QDate &date)
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            thisSchedulerData[i]->setPerformance(newPerformance);
+        }
+    }
+    qDebug()<<"the date was out of scope";
+}
+
+void EmployeeData::setPositionScheduled(QString &newPositionScheduled, QDate &date)
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            thisSchedulerData[i]->setPositionScheduled(newPositionScheduled);
+        }
+    }
+    qDebug()<<"the date was out of scope";
+}
+
+void EmployeeData::setSynergy(QMap<QString, float> &newSynergy, QDate &date)
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            thisSchedulerData[i]->setSynergy(newSynergy);
+        }
+    }
+    qDebug()<<"the date was out of scope";
+}
+
+void EmployeeData::setSchedulerData(QDate &date, int &shift, QString &positionScheduled, float &performance, QMap<QString, float> synergy)
+{
+    for(int i=0; i<thisSchedulerData.size(); i++)
+    {
+        if(thisSchedulerData[i]->date() == date)
+        {
+            thisSchedulerData[i] = (new SchedulerData(date, shift, positionScheduled, performance, synergy));
+            break;
+        }
+
+    }
+    thisSchedulerData.append(new SchedulerData(date, shift, positionScheduled, performance, synergy));
+}
+

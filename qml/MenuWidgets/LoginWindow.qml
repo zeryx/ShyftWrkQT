@@ -83,6 +83,7 @@ Item{
             onTextChanged: {loginAssetsRoot.m_password = passwordInputField.text}
         }
     }
+
     Button{
         id: loginButton
         anchors.top: password.bottom
@@ -92,11 +93,14 @@ Item{
         width: 45
         text:qsTr("login")
 
-        onClicked: {
-            if(loginAssetsRoot.m_username !== " " && loginAssetsRoot.m_password !== " ")
-            {
-                var mainWindowString = "MenuWidgets/MainWindow.qml"
-                mainWindowContext.swapApps(mainWindowString)
+        MouseArea{
+            anchors.fill: parent
+            onReleased: {
+                if(loginAssetsRoot.m_username !== " " && loginAssetsRoot.m_password !== " ")
+                {
+                    var mainWindowString = "MenuWidgets/MainWindow.qml"
+                    mainWindowContext.swapApps(mainWindowString)
+                }
             }
         }
     }

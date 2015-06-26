@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import jbQuick.Charts 1.0
+
 Rectangle {
     id: root
     anchors.fill: parent
@@ -16,7 +17,7 @@ Rectangle {
         MouseArea{
             id: closeAAGMouseArea
             anchors.fill: parent
-            onClicked: { aAgLoader.active = false}
+            onReleased: { aAgLoader.active = false}
         }
     }
 
