@@ -94,7 +94,7 @@ void EmployeeModelMaster::configSQL()
 {
     db = QSqlDatabase::addDatabase("QMYSQL", "pullFromSQL");
     db.setHostName("45.33.71.118");
-    db.setPort(3306);
+    db.setPort(4454);
     db.setDatabaseName("ShyftWrk");
     db.setUserName("testuser");
     db.setPassword("test");
