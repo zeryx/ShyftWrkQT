@@ -5,20 +5,21 @@ SchedulerData::SchedulerData(QObject *parent)
 {
 }
 
-SchedulerData::SchedulerData(QDate &newDate, int& newshift, QString& newPositionScheduled, float& newPerformance, QMap<QString, float> newSynergy, QObject *parent)
+SchedulerData::SchedulerData(QDate &newDate, int& newShiftScheduled, int& newShiftID, QString& newPositionScheduled, float& newPerformance, QMap<QString, float> newSynergy, QObject *parent)
     :QObject(parent)
 {
     this->setDate(newDate);
-    this->setShift(newshift);
+    this->setShiftScheduled(newShiftScheduled);
+    this->setShiftID(newShiftID);
     this->setPositionScheduled(newPositionScheduled);
     this->setPerformance(newPerformance);
     this->setSynergy(newSynergy);
 }
 
 //-- gets
-int SchedulerData::shift() const
+int SchedulerData::shiftScheduled() const
 {
-    return thisShift;
+    return thisShiftScheduled;
 }
 
 float SchedulerData::performance() const
@@ -55,12 +56,12 @@ float SchedulerData::synergyWith(int& index) const
 
 
 //-- sets
-void SchedulerData::setShift(int& newShift)
+void SchedulerData::setShiftScheduled(int& newShiftScheduled)
 {
-    if(newShift != thisShift)
+    if(newShiftScheduled != thisShiftScheduled)
     {
-        thisShift = newShift;
-        emit shiftChanged();
+        thisShiftScheduled = newShiftScheduled;
+        emit shiftScheduledChanged();
     }
 }
 

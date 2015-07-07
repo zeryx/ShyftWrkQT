@@ -1,14 +1,16 @@
 TEMPLATE = app
 
-QT += qml quick widgets \
-    sql
+QT += core\
+    qml quick widgets \
+    network
 
 macx:CONFIG -= app_bundle
 
 SOURCES += main.cpp \
     src/employeedata.cpp \
-    src/employeeModelMaster.cpp \
-    src/schedulerdata.cpp
+    src/schedulerdata.cpp \
+    src/restclient.cpp \
+    src/staffModel.cpp
 
 RESOURCES += qml.qrc
 
@@ -20,6 +22,7 @@ include(deployment.pri)
 QTPLUGIN += QSQLMYSQL
 
 HEADERS += \
-    src/employeeModelMaster.h \
     src/employeedata.h \
-    src/schedulerdata.h
+    src/schedulerdata.h \
+    src/restclient.h \
+    src/staffmodel.h

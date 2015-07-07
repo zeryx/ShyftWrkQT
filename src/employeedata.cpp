@@ -27,13 +27,18 @@ QString EmployeeData::positions() const
     return thisPositions;
 }
 
-int EmployeeData::getShift(QDate &date) const
+QString EmployeeData::uid() const
+{
+    return thisUID;
+}
+
+int EmployeeData::getShiftScheduled(QDate &date) const
 {
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
         {
-            return thisSchedulerData[i]->shift();
+            return thisSchedulerData[i]->shiftScheduled();
         }
     }
     qDebug()<<"the date was out of scope";
@@ -138,13 +143,21 @@ void EmployeeData::setPositions(QString positions)
     }
 }
 
-void EmployeeData::setShift(int &newShift, QDate &date)
+void EmployeeData::setUID(QString newUID)
+{
+    if(thisUID != newUID){
+        thisUID = newUID;
+        emit uidChanged();
+    }
+}
+
+void EmployeeData::setShiftScheduled(int &newShiftScheduled, QDate &date)
 {
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
         {
-            thisSchedulerData[i]->setShift(newShift);
+            thisSchedulerData[i]->setShiftScheduled(newShiftScheduled);
         }
     }
     qDebug()<<"the date was out of scope";
@@ -186,17 +199,17 @@ void EmployeeData::setSynergy(QMap<QString, float> &newSynergy, QDate &date)
     qDebug()<<"the date was out of scope";
 }
 
-void EmployeeData::setSchedulerData(QDate &date, int &shift, QString &positionScheduled, float &performance, QMap<QString, float> synergy)
+void EmployeeData::setSchedulerData(QDate &date, int &shiftScheduled, QString &positionScheduled, float &performance, QMap<QString, float> synergy)
 {
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
         {
-            thisSchedulerData[i] = (new SchedulerData(date, shift, positionScheduled, performance, synergy));
+            thisSchedulerData[i] = (new SchedulerData(date, shiftScheduled, positionScheduled, performance, synergy));
             break;
         }
 
     }
-    thisSchedulerData.append(new SchedulerData(date, shift, positionScheduled, performance, synergy));
+    thisSchedulerData.append(new SchedulerData(date, shiftScheduled, positionScheduled, performance, synergy));
 }
 

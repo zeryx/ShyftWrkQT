@@ -10,11 +10,13 @@ class SchedulerData : public QObject
 public:
     explicit SchedulerData(QObject *parent = 0);
 
-    explicit SchedulerData(QDate &newDate, int& newshift, QString& newPositionScheduled, float& newPerformance, QMap<QString, float> newSynergy, QObject *parent=0);
+    explicit SchedulerData(QDate &newDate, int& newShiftScheduled, int& newShiftID, QString& newPositionScheduled, float& newPerformance, QMap<QString, float> newSynergy, QObject *parent=0);
 
 public: // gets
 
-    int shift()const;
+    int shiftScheduled()const;
+
+    int shiftID()const;
 
     float performance()const;
 
@@ -30,7 +32,9 @@ public: // gets
 
 public: // sets
 
-    void setShift(int& newShift);
+    void setShiftScheduled(int& newShiftScheduled);
+
+    void setShiftID(int& newShiftID);
 
     void setPerformance(float& newPerformance);
 
@@ -42,7 +46,9 @@ public: // sets
 
 signals:
 
-    void shiftChanged();
+    void shiftScheduledChanged();
+
+    void shiftIDChanged();
 
     void positionScheduledChanged();
 
@@ -54,7 +60,8 @@ signals:
 
 protected:
 
-    int thisShift;
+    int thisShiftScheduled;
+    int shiftID;
     float thisPerformance;
     QDate thisDate;
     QString thisPositionScheduled;

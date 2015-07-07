@@ -20,7 +20,9 @@ public: //-- gets
 
     QString positions()const;
 
-    int getShift(QDate &date)const;
+    QString uid()const;
+
+    int getShiftScheduled(QDate &date)const;
 
     float getPerformance(QDate &date)const;
 
@@ -36,13 +38,15 @@ public: //-- gets
 
 public: //-- sets
 
-    void setPortrait(QUrl portrait);
+    void setPortrait(QUrl newPortrait);
 
-    void setName(QString name);
+    void setName(QString newName);
 
-    void setPositions(QString positions);
+    void setPositions(QString newPositions);
 
-    void setShift(int& newShift, QDate& date);
+    void setUID(QString newUID);
+
+    void setShiftScheduled(int& newShiftScheduled, QDate& date);
 
     void setPerformance(float& newPerformance, QDate& date);
 
@@ -52,7 +56,7 @@ public: //-- sets
 
     void setSchedulerData(QList<SchedulerData*> list);
 
-    void setSchedulerData(QDate& date, int& shift, QString& positionScheduled, float& performance, QMap<QString, float> Synergy);
+    void setSchedulerData(QDate& date, int& shiftScheduled, QString& positionScheduled, float& performance, QMap<QString, float> Synergy);
 
 signals:
 
@@ -64,10 +68,13 @@ signals:
 
     void schedulerDataChanged();
 
+    void uidChanged();
+
 
 protected:
 
     QUrl thisPortrait;
+    QString thisUID;
     QString thisName;
     QString thisPositions;
     QList<SchedulerData*> thisSchedulerData;

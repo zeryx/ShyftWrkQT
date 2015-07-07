@@ -5,7 +5,7 @@
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QDebug>
-#include <src/employeeModelMaster.h>
+#include <src/staffmodel.h>
 #include <QSortFilterProxyModel>
 int main(int argc, char *argv[])
 {
@@ -14,13 +14,12 @@ int main(int argc, char *argv[])
 
     engine.addImportPath(QStringLiteral("../ShyftWrkQT/qml"));
 
-    EmployeeModelMaster* masterModel = new EmployeeModelMaster();
+    StaffModel* masterModel = new StaffModel();
     QSortFilterProxyModel *searchFilteredModel = new QSortFilterProxyModel();
     searchFilteredModel->setSourceModel(masterModel);
     searchFilteredModel->setFilterRole(masterModel->nameRole);
     searchFilteredModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    masterModel->configSQL();
-    qDebug()<<"info successfully pulled from database? " << masterModel->pullFromSQL();
+
 
     QList<QObject*> tableFilteredModel;
     for(int i=0; i<masterModel->headerSize(); i++)
@@ -41,7 +40,6 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:///qml/ShyftWrk.qml")));
 
     QObject *win = engine.rootObjects()[0];
-    masterModel->m_win = win;
     masterModel->m_proxy = searchFilteredModel;
     QObject *mainAppStart = win->findChild<QObject*>("mainWindowContext");
     QObject::connect(mainAppStart, SIGNAL(mainAppStarted()), masterModel, SLOT(connectionsPostLogin()));

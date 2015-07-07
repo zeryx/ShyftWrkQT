@@ -20,7 +20,6 @@ Flickable{
                                                         }))
             }
             return temp
-
         }
 
         Component{ //dynamically repeated column object
@@ -114,7 +113,6 @@ Flickable{
                                 onReleased: thisColumn.newLoaderSelection(0)
                             }
                         }
-
                         Image{
                             id: portraitText
                             source: thisSelectionLoader.loaderModel.portrait
