@@ -23,7 +23,7 @@ public:
     };
 public: //  http request methods
 
-    void requestStaffData();
+    void requestDataPull();
 
     void requestLogin(QString username, QString password, QString organization);
 
@@ -41,7 +41,9 @@ signals:
 
 public slots: // standard response handler for signal information
 
-    QVariant GenericResponse(QNetworkReply *reply);
+    viud genericResponse(QNetworkReply *reply);
+
+    void loginResponse(QNetworkReply *reply);
 
     void addPerson(QNetworkReply *reply);
 
@@ -50,6 +52,8 @@ public slots: // standard response handler for signal information
     QList<EmployeeData*> getStaff (QNetworkReply *reply);
 
     void editPerson(QNetworkReply *reply);
+
+    void errorResponse(QNetworkReply::NetworkError);
 
 
 private:
@@ -60,7 +64,8 @@ private:
 
     QNetworkCookieJar *thisSession;
 
-    QObject* thisFrame;
+    QObject* thisWindow;
+
 };
 
 #endif // RESTCLIENT_H
