@@ -137,12 +137,6 @@ Flickable{
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: qsTr(thisSelectionLoader.loaderModel.position)
                         }
-                        Text{
-                            id:scoreText
-                            anchors.top: positionText.bottom
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: thisSelectionLoader.loaderModel.score
-                        }
                     }
                 }
 
@@ -189,12 +183,6 @@ Flickable{
                             anchors.top: nameText.bottom
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: qsTr(model.position)
-                        }
-                        Text{
-                            id:scoreText
-                            anchors.top: positionText.bottom
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: model.score
                         }
                     }
                 }

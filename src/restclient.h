@@ -4,9 +4,10 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QNetworkAccessManager>
+#include <QNetworkCookieJar>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QVariant>
+#include <QJsonObject>
 #include <QList>
 #include "employeedata.h"
 #include "schedulerdata.h"
@@ -22,49 +23,39 @@ public:
         restRemove
     };
 public: //  http request methods
+    QJsonObject requestDataRefresh();
 
-    void requestDataPull();
+    bool requestLogin(QString& username, QString& password, QString& organization);
 
-    void requestLogin(QString username, QString password, QString organization);
+    void logout();
 
-    void requestLogout();
+    bool requestShiftChange(SchedulerData*,QString UID, restModify = restAdd);
 
-    void requestShiftChange(SchedulerData*, restModify = restAdd);
-
-    void requestStaffChange(EmployeeData*, restModify = restAdd);
-
-public:
-    void connectionsPostLogin();
+    bool requestStaffChange(EmployeeData*, restModify = restAdd);
 
 signals:
+    void successfulRequest();
 
+    void errorDetected();
 
-public slots: // standard response handler for signal information
-
-    viud genericResponse(QNetworkReply *reply);
-
-    void loginResponse(QNetworkReply *reply);
-
-    void addPerson(QNetworkReply *reply);
-
-    void removePerson(QNetworkReply *reply);
-
-    QList<EmployeeData*> getStaff (QNetworkReply *reply);
-
-    void editPerson(QNetworkReply *reply);
+private slots: // standard response handler for signal information
+    void genericResponse(QNetworkReply *reply);
 
     void errorResponse(QNetworkReply::NetworkError);
 
 
 private:
 
-    QString *thisOrganization;
+    QJsonObject thisDataStream;
+
+    QString thisOrganisation;
+
+    QByteArray baseUrl;
 
     QNetworkAccessManager *thisRestful;
 
     QNetworkCookieJar *thisSession;
 
-    QObject* thisWindow;
 
 };
 

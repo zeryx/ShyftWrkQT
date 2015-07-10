@@ -4,16 +4,10 @@
 #include <QDebug>
 #include <QSortFilterProxyModel>
 #include <QPluginLoader>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkCookieJar>
-#include <QNetworkRequest>
-
 StaffModel::StaffModel(QObject *parent)
     :RestClient(parent)
 {
 }
-
 
 int StaffModel::rowCount(const QModelIndex &parent) const
 {
@@ -59,7 +53,7 @@ bool StaffModel::setData(const QModelIndex &index, QVariant &value, int role)
             break;
         case positionRole:
             m_data[index.row()]->setPositions(value.toString());
-            break;            
+            break;
         default:
             return false;
         }
@@ -78,60 +72,30 @@ Qt::ItemFlags StaffModel::flags(const QModelIndex &index) const
 }
 
 
-void StaffModel::addPerson(EmployeeData* person)
+bool StaffModel::addPerson(EmployeeData* person)
 {
-    if(std::find(m_data.begin(),m_data.end(), person) != m_data.end()) //This doesn't do anything
+    for(int i = rowCount()-1; i>=0; i--)
     {
-        qDebug() << "name already exists";
-        return;
+        if(m_data[i] == person)
+        {
+            qDebug()<<"this person already exists in the database.";
+            return 0;
+        }
     }
 
-    beginInsertRows(QModelIndex(), this->rowCount(), this->rowCount());
+
+    beginInsertRows(QModelIndex(), this->rowCount()-1, this->rowCount());
 
     m_data << person;
 
     endInsertRows();
+
+    return this->requestStaffChange(person, restAdd);
 }
 
 
-bool StaffModel::pullJsonData() //pulls from configured SQL server with parameters specified in configSQL().
-{
 
-
-    int nameField = query.record().indexOf("Name");
-    int positionField = query.record().indexOf("Position");
-    int portraitField = query.record().indexOf("Portrait");
-    QUrl baseURL("http://shyftwrk.com:80");
-
-    while(query.next()){
-        QString Name = query.value(nameField).toString();
-        QString Position = query.value(positionField).toString();
-        QUrl relative = query.value(portraitField).toUrl();
-        this->addPerson(new EmployeeData(baseURL.resolved(relative), Name, Position));
-        setHeaderData(Position);
-    }
-    return true;
-}
-
-bool StaffModel::addPersonToSql( EmployeeData * Person)
-{
-        QSqlQuery query(db);
-        query.prepare("INSERT INTO `Employees` (id, Name, Position, Portrait, Individual_Performance, Interpersonal_Performance)"
-                        "Values (:id, :Name, :Position, :Portrait)");
-
-        query.bindValue(":id", QVariant()); //QVariant() == NULL, which tells mysql to auto_inc
-        query.bindValue(":Name", Person->name());
-        query.bindValue(":Position", Person->positions());
-        query.bindValue(":Portrait", Person->portrait());
-        qDebug()<<"person added to database? "<<query.exec();
-        if(!query.isValid())
-        {
-            return false;
-        }
-        return true;
-}
-
-void StaffModel::removePerson(int col)
+bool StaffModel::removePerson(int col)
 {
     QList<EmployeeData*>::iterator itr;
 
@@ -145,6 +109,7 @@ void StaffModel::removePerson(int col)
 
     endRemoveRows();
 
+    return this->requestStaffChange(m_data[col],restRemove); // remove this staff from this organisation
 }
 
 QVariant StaffModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -204,3 +169,32 @@ EmployeeData* StaffModel::getPerson(size_t index)
     return m_data[index];
 }
 
+
+bool StaffModel::loginAndPull(QString username, QString password, QString organisation){
+    if(this->requestLogin(username, password, organisation)){
+        QJsonObject fullIter = this->requestDataRefresh();
+        QList<EmployeeData*> tmp;
+        qDebug()<<fullIter["staff"].toObject().contains("employee" +QString::number(0));
+        for(int i=0; fullIter["staff"].toObject().contains("employee" +QString::number(i)); i++){
+
+            QUrl partial("http://www.shyftwrk.com");
+            QJsonObject currentItr = fullIter["staff"].toObject()["employee" +QString::number(i)].toObject(); //for readability
+            tmp.append(new EmployeeData(
+                           currentItr["name"].toString(),
+                       currentItr["uid"].toString(),
+                    currentItr["positions"].toString(),
+                    partial.resolved((QUrl)currentItr["portrait"].toString())));
+            QStringList positions = currentItr["positions"].toString().split(",", QString::SkipEmptyParts);//split positions
+            for(int k=0; k<positions.length(); k++){
+                positions[k] = positions[k].simplified();
+                this->setHeaderData(positions[k]);
+            }
+        }
+        this->beginInsertRows(QModelIndex(), 0, this->rowCount());
+        this->m_data = tmp;
+        this->endInsertRows();
+        return true;
+    }
+    else
+        return false;
+}

@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_NO_DEBUG -DQT_QUICK_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_QML_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_NO_DEBUG -DQT_QUICK_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_QML_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIE $(DEFINES)
-CXXFLAGS      = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIE $(DEFINES)
-INCPATH       = -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtQuick -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtQml -isystem /usr/include/x86_64-linux-gnu/qt5/QtNetwork -isystem /usr/include/x86_64-linux-gnu/qt5/QtSql -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
+CXXFLAGS      = -m64 -pipe -O2 -std=c++0x -Wall -W -D_REENTRANT -fPIE $(DEFINES)
+INCPATH       = -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtQuick -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtQml -isystem /usr/include/x86_64-linux-gnu/qt5/QtNetwork -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -36,7 +36,7 @@ DISTNAME      = ShyftWrkQT1.0.0
 DISTDIR = /home/james/Documents/Code/ShyftWrkQT/.tmp/ShyftWrkQT1.0.0
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lQt5Quick -lQt5Widgets -lQt5Gui -lQt5Qml -lQt5Network -lQt5Sql -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lQt5Quick -lQt5Widgets -lQt5Gui -lQt5Qml -lQt5Network -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -50,19 +50,27 @@ OBJECTS_DIR   = ./
 
 SOURCES       = main.cpp \
 		src/employeedata.cpp \
-		src/employeemodeltable.cpp \
-		src/employeeModelMaster.cpp qrc_qml.cpp \
+		src/schedulerdata.cpp \
+		src/restclient.cpp \
+		src/staffModel.cpp \
+		src/initialize.cpp qrc_qml.cpp \
 		moc_employeedata.cpp \
-		moc_employeemodeltable.cpp \
-		moc_employeeModelMaster.cpp
+		moc_schedulerdata.cpp \
+		moc_restclient.cpp \
+		moc_staffmodel.cpp \
+		moc_initialize.cpp
 OBJECTS       = main.o \
 		employeedata.o \
-		employeemodeltable.o \
-		employeeModelMaster.o \
+		schedulerdata.o \
+		restclient.o \
+		staffModel.o \
+		initialize.o \
 		qrc_qml.o \
 		moc_employeedata.o \
-		moc_employeemodeltable.o \
-		moc_employeeModelMaster.o
+		moc_schedulerdata.o \
+		moc_restclient.o \
+		moc_staffmodel.o \
+		moc_initialize.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -111,6 +119,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		deployment.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resolve_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_post.prf \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/c++11.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/warn_on.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf \
@@ -123,11 +132,15 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		ShyftWrkQT.pro src/employeedata.h \
-		src/employeemodeltable.h \
-		src/employeeModelMaster.h main.cpp \
+		src/schedulerdata.h \
+		src/restclient.h \
+		src/staffmodel.h \
+		src/initialize.h main.cpp \
 		src/employeedata.cpp \
-		src/employeemodeltable.cpp \
-		src/employeeModelMaster.cpp
+		src/schedulerdata.cpp \
+		src/restclient.cpp \
+		src/staffModel.cpp \
+		src/initialize.cpp
 QMAKE_TARGET  = ShyftWrkQT
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = ShyftWrkQT
@@ -206,6 +219,7 @@ Makefile: ShyftWrkQT.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmak
 		deployment.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resolve_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_post.prf \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/c++11.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/warn_on.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf \
@@ -224,8 +238,7 @@ Makefile: ShyftWrkQT.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmak
 		/usr/lib/x86_64-linux-gnu/libQt5Network.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Core.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Gui.prl \
-		/usr/lib/x86_64-linux-gnu/libQt5Widgets.prl \
-		/usr/lib/x86_64-linux-gnu/libQt5Sql.prl
+		/usr/lib/x86_64-linux-gnu/libQt5Widgets.prl
 	$(QMAKE) -o Makefile ShyftWrkQT.pro
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf:
@@ -275,6 +288,7 @@ Makefile: ShyftWrkQT.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmak
 deployment.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resolve_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_post.prf:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/c++11.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/warn_on.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf:
@@ -294,7 +308,6 @@ qml.qrc:
 /usr/lib/x86_64-linux-gnu/libQt5Core.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Gui.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Widgets.prl:
-/usr/lib/x86_64-linux-gnu/libQt5Sql.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ShyftWrkQT.pro
 
@@ -310,8 +323,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents qml.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents src/employeedata.h src/employeemodeltable.h src/employeeModelMaster.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp src/employeedata.cpp src/employeemodeltable.cpp src/employeeModelMaster.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/employeedata.h src/schedulerdata.h src/restclient.h src/staffmodel.h src/initialize.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp src/employeedata.cpp src/schedulerdata.cpp src/restclient.cpp src/staffModel.cpp src/initialize.cpp $(DISTDIR)/
 
 
 clean:compiler_clean 
@@ -339,29 +352,47 @@ qrc_qml.cpp: qml.qrc \
 		qml/ShyftWrk.qml \
 		qml/ShiftScheduler.qml \
 		qml/ScrollableEmployeeColumn.qml \
-		qml/EmployeeEditor.qml \
-		qml/EmployeeViewer.qml \
+		qml/assets/ScrollBar.qml \
+		qml/assets/EmployeeAAG.qml \
+		qml/assets/ScheduleViewingPane.qml \
 		qml/assets/Search.qml \
+		qml/assets/Calendar.qml \
 		qml/assets/Clickable.qml \
-		assets/searchbox.jpg \
-		assets/icons/arrow_right.svg \
-		assets/icons/arrow_left.svg
+		qml/assets/searchbox.jpg \
+		qml/assets/close_button.zvg \
+		qml/MenuWidgets/LoginWindow.qml \
+		qml/MenuWidgets/ViewerWindow.qml \
+		qml/MenuWidgets/MainWindow.qml \
+		qml/MenuWidgets/EditorWindow.qml
 	/usr/lib/x86_64-linux-gnu/qt5/bin/rcc -name qml qml.qrc -o qrc_qml.cpp
 
-compiler_moc_header_make_all: moc_employeedata.cpp moc_employeemodeltable.cpp moc_employeeModelMaster.cpp
+compiler_moc_header_make_all: moc_employeedata.cpp moc_schedulerdata.cpp moc_restclient.cpp moc_staffmodel.cpp moc_initialize.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_employeedata.cpp moc_employeemodeltable.cpp moc_employeeModelMaster.cpp
-moc_employeedata.cpp: src/employeedata.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/employeedata.h -o moc_employeedata.cpp
+	-$(DEL_FILE) moc_employeedata.cpp moc_schedulerdata.cpp moc_restclient.cpp moc_staffmodel.cpp moc_initialize.cpp
+moc_employeedata.cpp: src/schedulerdata.h \
+		src/employeedata.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/employeedata.h -o moc_employeedata.cpp
 
-moc_employeemodeltable.cpp: src/employeedata.h \
-		src/employeeModelMaster.h \
-		src/employeemodeltable.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/employeemodeltable.h -o moc_employeemodeltable.cpp
+moc_schedulerdata.cpp: src/schedulerdata.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/schedulerdata.h -o moc_schedulerdata.cpp
 
-moc_employeeModelMaster.cpp: src/employeedata.h \
-		src/employeeModelMaster.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/employeeModelMaster.h -o moc_employeeModelMaster.cpp
+moc_restclient.cpp: src/employeedata.h \
+		src/schedulerdata.h \
+		src/restclient.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/restclient.h -o moc_restclient.cpp
+
+moc_staffmodel.cpp: src/employeedata.h \
+		src/schedulerdata.h \
+		src/restclient.h \
+		src/staffmodel.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/staffmodel.h -o moc_staffmodel.cpp
+
+moc_initialize.cpp: src/staffmodel.h \
+		src/employeedata.h \
+		src/schedulerdata.h \
+		src/restclient.h \
+		src/initialize.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/james/Documents/Code/ShyftWrkQT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtQuick -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtQml -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/initialize.h -o moc_initialize.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -377,21 +408,34 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean
 
 ####### Compile
 
-main.o: main.cpp src/employeeModelMaster.h \
+main.o: main.cpp src/initialize.h \
+		src/staffmodel.h \
 		src/employeedata.h \
-		src/employeemodeltable.h
+		src/schedulerdata.h \
+		src/restclient.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-employeedata.o: src/employeedata.cpp src/employeedata.h
+employeedata.o: src/employeedata.cpp src/employeedata.h \
+		src/schedulerdata.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o employeedata.o src/employeedata.cpp
 
-employeemodeltable.o: src/employeemodeltable.cpp src/employeemodeltable.h \
-		src/employeedata.h \
-		src/employeeModelMaster.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o employeemodeltable.o src/employeemodeltable.cpp
+schedulerdata.o: src/schedulerdata.cpp src/schedulerdata.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o schedulerdata.o src/schedulerdata.cpp
 
-employeeModelMaster.o: src/employeeModelMaster.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o employeeModelMaster.o src/employeeModelMaster.cpp
+restclient.o: src/restclient.cpp src/restclient.h \
+		src/employeedata.h \
+		src/schedulerdata.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o restclient.o src/restclient.cpp
+
+staffModel.o: src/staffModel.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o staffModel.o src/staffModel.cpp
+
+initialize.o: src/initialize.cpp src/initialize.h \
+		src/staffmodel.h \
+		src/employeedata.h \
+		src/schedulerdata.h \
+		src/restclient.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o initialize.o src/initialize.cpp
 
 qrc_qml.o: qrc_qml.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_qml.o qrc_qml.cpp
@@ -399,11 +443,17 @@ qrc_qml.o: qrc_qml.cpp
 moc_employeedata.o: moc_employeedata.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_employeedata.o moc_employeedata.cpp
 
-moc_employeemodeltable.o: moc_employeemodeltable.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_employeemodeltable.o moc_employeemodeltable.cpp
+moc_schedulerdata.o: moc_schedulerdata.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_schedulerdata.o moc_schedulerdata.cpp
 
-moc_employeeModelMaster.o: moc_employeeModelMaster.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_employeeModelMaster.o moc_employeeModelMaster.cpp
+moc_restclient.o: moc_restclient.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_restclient.o moc_restclient.cpp
+
+moc_staffmodel.o: moc_staffmodel.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_staffmodel.o moc_staffmodel.cpp
+
+moc_initialize.o: moc_initialize.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_initialize.o moc_initialize.cpp
 
 ####### Install
 

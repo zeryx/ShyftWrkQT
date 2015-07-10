@@ -103,12 +103,6 @@ Column{
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
-            Text{
-                id:scoreText
-                text: model.score
-                anchors.top: positionText.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
         }
     }
 }

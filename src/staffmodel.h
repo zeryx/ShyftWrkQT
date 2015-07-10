@@ -45,12 +45,13 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation = Qt::Horizontal, int role = Qt::DisplayRole) const;
 
-
+    bool loginAndPull(QString username, QString password, QString organisation);
 public:
 
-    void addPerson(EmployeeData *person);
 
-    void removePerson(int index);
+    bool addPerson(EmployeeData* person);
+
+    bool removePerson(int index);
 
     EmployeeData* getPerson(size_t index);
 
@@ -63,6 +64,9 @@ public:
     const_iterator begin()const{return m_data.begin();}
 
     const_iterator end()const{return m_data.end();}
+
+    void setQmlBinding(QObject*);
+
 
 public slots:
 
@@ -82,7 +86,7 @@ public:
 
     QList<EmployeeData*> m_data;
 
-    QSortFilterProxyModel* m_proxy; // these will be moved to a new class
+    QSortFilterProxyModel* m_proxy;
 
 
 

@@ -4,36 +4,32 @@ EmployeeData::EmployeeData()
 {
 }
 
-EmployeeData::EmployeeData(const QUrl &portrait, const QString &name, const QString &position)
-{
+EmployeeData::EmployeeData(const QString &name, const QString &uid, const QString &position, const QUrl &portrait){
     this->setPortrait(portrait);
     this->setName(name);
     this->setPositions(position);
+    this->setUID(uid);
 }
 
 //==-- gets
-QUrl EmployeeData::portrait() const
-{
+QUrl EmployeeData::portrait() const{
     return thisPortrait;
 }
 
-QString EmployeeData::name() const
-{
+QString EmployeeData::name() const{
     return thisName;
 }
 
-QString EmployeeData::positions() const
-{
+QString EmployeeData::positions() const{
     return thisPositions;
 }
 
-QString EmployeeData::uid() const
-{
+
+QString EmployeeData::uid() const{
     return thisUID;
 }
 
-int EmployeeData::getShiftScheduled(QDate &date) const
-{
+int EmployeeData::getShiftScheduled(QDate &date) const{
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -45,8 +41,7 @@ int EmployeeData::getShiftScheduled(QDate &date) const
     return -1;
 }
 
-float EmployeeData::getPerformance(QDate &date) const
-{
+float EmployeeData::getPerformance(QDate &date) const{
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -58,8 +53,7 @@ float EmployeeData::getPerformance(QDate &date) const
     return -1;
 }
 
-QString EmployeeData::getPositionScheduled(QDate &date) const
-{
+QString EmployeeData::getPositionScheduled(QDate &date) const{
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -72,8 +66,7 @@ QString EmployeeData::getPositionScheduled(QDate &date) const
     return null;
 }
 
-QMap<QString, float> EmployeeData::getSynergy(QDate &date) const
-{
+QMap<QString, float> EmployeeData::getSynergy(QDate &date) const{
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -86,8 +79,7 @@ QMap<QString, float> EmployeeData::getSynergy(QDate &date) const
     return null;
 }
 
-float EmployeeData::getSynergyWith(QDate &date, QString name) const
-{
+float EmployeeData::getSynergyWith(QDate &date, QString name) const{
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -99,13 +91,11 @@ float EmployeeData::getSynergyWith(QDate &date, QString name) const
     return -1;
 }
 
-QList<SchedulerData*> EmployeeData::getSchedulerDataList() const
-{
+QList<SchedulerData*> EmployeeData::getSchedulerDataList() const{
     return thisSchedulerData;
 }
 
-SchedulerData* EmployeeData::getScheduleFor(QDate &date) const
-{
+SchedulerData* EmployeeData::getScheduleFor(QDate &date) const{
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -114,45 +104,41 @@ SchedulerData* EmployeeData::getScheduleFor(QDate &date) const
         }
     }
     qDebug()<<"the date was out of scope";
-    SchedulerData* null;
+    SchedulerData* null = new SchedulerData;
+    null->deleteLater();
     return null;
 }
 
 //==-- sets
-void EmployeeData::setPortrait(QUrl portrait)
-{
+void EmployeeData::setPortrait(QUrl portrait){
     if(thisPortrait != portrait){
         thisPortrait = portrait;
         emit portraitChanged();
     }
 }
 
-void EmployeeData::setName(QString name)
-{
+void EmployeeData::setName(QString name){
     if(thisName != name){
         thisName = name;
         emit nameChanged();
     }
 }
 
-void EmployeeData::setPositions(QString positions)
-{
+void EmployeeData::setPositions(QString positions){
     if(thisPositions != positions){
         thisPositions = positions;
         emit positionsChanged();
     }
 }
 
-void EmployeeData::setUID(QString newUID)
-{
+void EmployeeData::setUID(QString newUID){
     if(thisUID != newUID){
         thisUID = newUID;
         emit uidChanged();
     }
 }
 
-void EmployeeData::setShiftScheduled(int &newShiftScheduled, QDate &date)
-{
+void EmployeeData::setShiftScheduled(int &newShiftScheduled, QDate &date){
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -163,8 +149,7 @@ void EmployeeData::setShiftScheduled(int &newShiftScheduled, QDate &date)
     qDebug()<<"the date was out of scope";
 }
 
-void EmployeeData::setPerformance(float &newPerformance, QDate &date)
-{
+void EmployeeData::setPerformance(float &newPerformance, QDate &date){
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -175,8 +160,7 @@ void EmployeeData::setPerformance(float &newPerformance, QDate &date)
     qDebug()<<"the date was out of scope";
 }
 
-void EmployeeData::setPositionScheduled(QString &newPositionScheduled, QDate &date)
-{
+void EmployeeData::setPositionScheduled(QString &newPositionScheduled, QDate &date){
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -187,8 +171,7 @@ void EmployeeData::setPositionScheduled(QString &newPositionScheduled, QDate &da
     qDebug()<<"the date was out of scope";
 }
 
-void EmployeeData::setSynergy(QMap<QString, float> &newSynergy, QDate &date)
-{
+void EmployeeData::setSynergy(QMap<QString, float> &newSynergy, QDate &date){
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
@@ -199,17 +182,16 @@ void EmployeeData::setSynergy(QMap<QString, float> &newSynergy, QDate &date)
     qDebug()<<"the date was out of scope";
 }
 
-void EmployeeData::setSchedulerData(QDate &date, int &shiftScheduled, QString &positionScheduled, float &performance, QMap<QString, float> synergy)
-{
+void EmployeeData::setSchedulerData(QDate &date, int &shiftScheduled, int &shiftID, QString &positionScheduled, float &performance, QMap<QString, float> &synergy){
     for(int i=0; i<thisSchedulerData.size(); i++)
     {
         if(thisSchedulerData[i]->date() == date)
         {
-            thisSchedulerData[i] = (new SchedulerData(date, shiftScheduled, positionScheduled, performance, synergy));
+            thisSchedulerData[i] = (new SchedulerData(date, shiftScheduled, shiftID, positionScheduled, performance, synergy));
             break;
         }
 
     }
-    thisSchedulerData.append(new SchedulerData(date, shiftScheduled, positionScheduled, performance, synergy));
+    thisSchedulerData.append(new SchedulerData(date, shiftScheduled, shiftID, positionScheduled, performance, synergy));
 }
 

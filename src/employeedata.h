@@ -12,7 +12,7 @@ public: //-- gets
 
     EmployeeData();
 
-    EmployeeData(const QUrl &portrait, const QString &name, const QString &positions);
+    EmployeeData( const QString &name, const QString &uid, const QString &positions, const QUrl &portrait);
 
     QUrl portrait()const;
 
@@ -56,7 +56,7 @@ public: //-- sets
 
     void setSchedulerData(QList<SchedulerData*> list);
 
-    void setSchedulerData(QDate& date, int& shiftScheduled, QString& positionScheduled, float& performance, QMap<QString, float> Synergy);
+    void setSchedulerData(QDate& date, int& shiftScheduled, int& shiftID, QString& positionScheduled, float& performance, QMap<QString, float>& Synergy);
 
 signals:
 

@@ -6,11 +6,14 @@ QT += core\
 
 macx:CONFIG -= app_bundle
 
+CONFIG += c++11
+
 SOURCES += main.cpp \
     src/employeedata.cpp \
     src/schedulerdata.cpp \
     src/restclient.cpp \
-    src/staffModel.cpp
+    src/staffModel.cpp \
+    src/initialize.cpp
 
 RESOURCES += qml.qrc
 
@@ -25,4 +28,5 @@ HEADERS += \
     src/employeedata.h \
     src/schedulerdata.h \
     src/restclient.h \
-    src/staffmodel.h
+    src/staffmodel.h \
+    src/initialize.h

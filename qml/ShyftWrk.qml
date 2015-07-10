@@ -54,13 +54,19 @@ ApplicationWindow{
         objectName: "mainWindowContext"
         height: root.height-banner.height
         width: root.width
-        signal mainAppStarted
+        signal authRequested(string username, string password, string organisation)
+        function loginAuth(bool){
+            if(bool)
+                swapApps("MenuWidgets/MainWindow.qml")
+            else
+                mainLoader.item.failMessage()
+        }
         property var m_model
         anchors{
             top: banner.bottom
             right: banner.right
             left: banner.left
-        }
+}
         function swapApps(source, model)
         {
             if(model)
@@ -71,8 +77,6 @@ ApplicationWindow{
             mainLoader.active = false
             mainLoader.source = source
             mainLoader.active = true
-            if(source === "MenuWidgets/MainWindow.qml") //if this is the main application window, pull from HTTP
-                mainAppStarted()
             mainLoader.visible = true
 
             return
@@ -91,6 +95,5 @@ ApplicationWindow{
                     easing.type: Easing.InOutQuad }}
 
         }
-
     }
 }

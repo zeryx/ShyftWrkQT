@@ -3,7 +3,7 @@ import QtGraphicalEffects 1.0
 
 FocusScope {
     id: root
-    objectName: "search"
+    objectName: "searchColumnContext"
     signal hasText(string searchText);
     property string searchText;
     property string textPromptInfo;
