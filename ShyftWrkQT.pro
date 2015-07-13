@@ -2,7 +2,7 @@ TEMPLATE = app
 
 QT += core\
     qml quick widgets \
-    network
+    network\
 
 macx:CONFIG -= app_bundle
 
@@ -30,3 +30,4 @@ HEADERS += \
     src/restclient.h \
     src/staffmodel.h \
     src/initialize.h
+QMAKE_CXXFLAGS += -g

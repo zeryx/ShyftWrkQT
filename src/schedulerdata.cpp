@@ -4,7 +4,7 @@ SchedulerData::SchedulerData(QObject *parent)
     :QObject(parent){
 }
 
-SchedulerData::SchedulerData(QDate &newDate, int& newShiftScheduled, int& newShiftID, QString& newPositionScheduled, float& newPerformance, QMap<QString, float>& newSynergy, QObject *parent)
+SchedulerData::SchedulerData(QDate newDate, int newShiftScheduled, int newShiftID, QString newPositionScheduled, double newPerformance, QMap<QString, float> newSynergy, QObject *parent)
     :QObject(parent){
     this->setDate(newDate);
     this->setShiftScheduled(newShiftScheduled);
@@ -19,7 +19,7 @@ int SchedulerData::shiftScheduled() const{
     return thisShiftScheduled;
 }
 
-float SchedulerData::performance() const{
+double SchedulerData::performance() const{
     return thisPerformance;
 }
 
@@ -50,35 +50,35 @@ float SchedulerData::synergyWith(int& index) const{
 
 
 //-- sets
-void SchedulerData::setShiftScheduled(int& newShiftScheduled){
+void SchedulerData::setShiftScheduled(int newShiftScheduled){
     if(newShiftScheduled != thisShiftScheduled){
         thisShiftScheduled = newShiftScheduled;
         emit shiftScheduledChanged();
     }
 }
 
-void SchedulerData::setShiftID(int &newShiftID){
+void SchedulerData::setShiftID(int newShiftID){
     if(newShiftID != thisShiftID){
         thisShiftID = newShiftID;
         emit shiftIDChanged();
     }
 }
 
-void SchedulerData::setPerformance(float& newPerformance){
+void SchedulerData::setPerformance(double newPerformance){
     if(newPerformance != thisPerformance){
         thisPerformance = newPerformance;
         emit performanceChanged();
     }
 }
 
-void SchedulerData::setDate(QDate& newDate){
+void SchedulerData::setDate(QDate newDate){
     if(newDate != thisDate){
         thisDate = newDate;
         emit dateChanged();
     }
 }
 
-void SchedulerData::setPositionScheduled(QString& newPositionScheduled){
+void SchedulerData::setPositionScheduled(QString newPositionScheduled){
     if(newPositionScheduled != thisPositionScheduled){
         thisPositionScheduled = newPositionScheduled;
         emit positionScheduledChanged();
@@ -86,7 +86,7 @@ void SchedulerData::setPositionScheduled(QString& newPositionScheduled){
 }
 
 
-void SchedulerData::setSynergy(QMap<QString, float>& newSynergy){
+void SchedulerData::setSynergy(QMap<QString, float> newSynergy){
     if(newSynergy != thisSynergy){
         thisSynergy = newSynergy;
         emit synergyChanged();

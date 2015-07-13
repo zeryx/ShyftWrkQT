@@ -54,7 +54,7 @@ ApplicationWindow{
         objectName: "mainWindowContext"
         height: root.height-banner.height
         width: root.width
-        signal authRequested(string username, string password, string organisation)
+        signal authRequested()
         function loginAuth(bool){
             if(bool)
                 swapApps("MenuWidgets/MainWindow.qml")
@@ -69,8 +69,10 @@ ApplicationWindow{
 }
         function swapApps(source, model)
         {
-            if(model)
+            if(model){
                 m_model = model
+            }
+
             else
                 m_model = 0
             mainLoader.visible = false

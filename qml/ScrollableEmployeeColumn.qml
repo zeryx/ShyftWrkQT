@@ -47,7 +47,7 @@ Column{
                 text:qsTr("Edit")
                 property string editorComponent
                 onTriggered: {
-                    editorComponent = "MenuWidgets/EditorWindow.qml"
+                    var editorComponent = "MenuWidgets/EditorWindow.qml"
                     mainWindowContext.swapApps(editorComponent, rightclickMenu.m_model)
                 }
             }

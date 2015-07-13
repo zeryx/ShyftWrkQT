@@ -12,7 +12,8 @@ public: //-- gets
 
     EmployeeData();
 
-    EmployeeData( const QString &name, const QString &uid, const QString &positions, const QUrl &portrait);
+    EmployeeData( const QString &name, const QString &uid, const QString &positions,
+                  const QUrl &portrait, const QList<SchedulerData*> &schedulerData, QObject* parent =0);
 
     QUrl portrait()const;
 
@@ -22,17 +23,13 @@ public: //-- gets
 
     QString uid()const;
 
-    int getShiftScheduled(QDate &date)const;
+    QMap<QDate, int> getShiftScheduled()const;
 
-    float getPerformance(QDate &date)const;
+    QMap<QDate, double> getPerformance()const;
 
-    QString getPositionScheduled(QDate &date)const;
+    QMap<QDate,QString> getPositionScheduled()const;
 
-    QMap<QString, float> getSynergy(QDate &date)const;
-
-    float getSynergyWith(QDate &date, QString name)const;
-
-    QList<SchedulerData*> getSchedulerDataList()const;
+    QMap<QDate, QMap<QString, float> > getSynergy()const;
 
     SchedulerData* getScheduleFor(QDate &date)const;
 
@@ -48,7 +45,7 @@ public: //-- sets
 
     void setShiftScheduled(int& newShiftScheduled, QDate& date);
 
-    void setPerformance(float& newPerformance, QDate& date);
+    void setPerformance(double& newPerformance, QDate& date);
 
     void setPositionScheduled(QString& newPositionScheduled, QDate& date);
 
@@ -56,7 +53,8 @@ public: //-- sets
 
     void setSchedulerData(QList<SchedulerData*> list);
 
-    void setSchedulerData(QDate& date, int& shiftScheduled, int& shiftID, QString& positionScheduled, float& performance, QMap<QString, float>& Synergy);
+    void setSchedulerData(QDate& date, int& shiftScheduled, int& shiftID,
+                          QString& positionScheduled, double& performance, QMap<QString, float>& Synergy);
 
 signals:
 

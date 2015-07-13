@@ -159,9 +159,6 @@ QHash<int, QByteArray> StaffModel::roleNames() const
     roles[nameRole] = "name";
     roles[portraitRole] = "portrait";
     roles[positionRole] = "position";
-    roles[avgPerformanceRole] = "avgPerformance";
-    roles[synergyRole] = "synergy";
-    roles[avgShiftsRole] = "avgShifts";
     return roles;
 }
 EmployeeData* StaffModel::getPerson(size_t index)
@@ -173,25 +170,50 @@ EmployeeData* StaffModel::getPerson(size_t index)
 bool StaffModel::loginAndPull(QString username, QString password, QString organisation){
     if(this->requestLogin(username, password, organisation)){
         QJsonObject fullIter = this->requestDataRefresh();
-        QList<EmployeeData*> tmp;
-        qDebug()<<fullIter["staff"].toObject().contains("employee" +QString::number(0));
+        QList<EmployeeData*> employTmp;
         for(int i=0; fullIter["staff"].toObject().contains("employee" +QString::number(i)); i++){
+            QList<SchedulerData*> schedTmp;
 
             QUrl partial("http://www.shyftwrk.com");
-            QJsonObject currentItr = fullIter["staff"].toObject()["employee" +QString::number(i)].toObject(); //for readability
-            tmp.append(new EmployeeData(
-                           currentItr["name"].toString(),
-                       currentItr["uid"].toString(),
-                    currentItr["positions"].toString(),
-                    partial.resolved((QUrl)currentItr["portrait"].toString())));
-            QStringList positions = currentItr["positions"].toString().split(",", QString::SkipEmptyParts);//split positions
+
+            QJsonObject employeeItr = fullIter["staff"].toObject()["employee" +QString::number(i)].toObject(); //for readability
+
+            //append shift data
+            for(int j=0; employeeItr["shift data"].toObject().contains("shift"+QString::number(j)); j++){
+                QJsonObject shiftItr = employeeItr["shift data"].toObject()["shift"+QString::number(j)].toObject();
+                QMap<QString, float> synergy;
+                for(int k=0; shiftItr["synergy"].toObject().contains("synergy"+QString::number(k)); k++){
+
+                    QJsonObject synergyItr = shiftItr["synergy"].toObject()["synergy"+QString::number(k)].toObject();
+                    QString column = synergyItr["column"].toString();
+                    column = column.remove(0, 4); // remove the synergy column identifiers, no longer needed
+                    synergy[column] = synergyItr["data"].toDouble();
+                }
+                QVariant date(shiftItr["date"]);
+                schedTmp.append(new SchedulerData(
+                        date.toDate(),
+                        shiftItr["shift scheduled"].toInt(),
+                        shiftItr["shift id"].toInt(),
+                        shiftItr["position scheduled"].toString(),
+                        shiftItr["performance"].toDouble(),
+                        synergy, this));
+            }
+            //append employeeData
+            employTmp.append(new EmployeeData(
+                    employeeItr["name"].toString(),
+                    employeeItr["uid"].toString(),
+                    employeeItr["positions"].toString(),
+                    partial.resolved((QUrl)employeeItr["portrait"].toString()),
+                    schedTmp));
+
+            QStringList positions = employeeItr["positions"].toString().split(",", QString::SkipEmptyParts);//split positions
             for(int k=0; k<positions.length(); k++){
                 positions[k] = positions[k].simplified();
                 this->setHeaderData(positions[k]);
             }
         }
         this->beginInsertRows(QModelIndex(), 0, this->rowCount());
-        this->m_data = tmp;
+        this->m_data = employTmp;
         this->endInsertRows();
         return true;
     }

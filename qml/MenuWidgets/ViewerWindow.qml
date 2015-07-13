@@ -1,4 +1,6 @@
 import QtQuick 2.0
+import QtQuick.Controls 1.2
+import jbQuick.Charts 1.0
 import "../"
 Item{
     id: root
@@ -11,11 +13,33 @@ Item{
         anchors.top: parent.top
         z:-1
     }
+    Button{
+        anchors.top: root.top
+        anchors.topMargin: 45
+        anchors.right: employeeColumn.left
+        anchors.rightMargin: 10
+        height: 40
+        width: 75
+        MouseArea{
+            anchors.fill: parent
+            onReleased: {
+                var returnString = "MenuWidgets/MainWindow.qml"
+                mainWindowContext.swapApps(returnString)
+            }
+        }
+
+        Text{
+            anchors.centerIn: parent
+            text: "Back"
+            font.family: "abel"
+        }
+    }
     Rectangle{
         id: viewPanel
-        height: 500
-        width: 500
-        anchors.centerIn: parent
+        height:parent.height
+        width:parent.width-employeeColumn.width
+        anchors.right: employeeColumn.left
+        anchors.top: parent.top
         BorderImage {
             id: name
             source: "../assets/searchbox.jpg"
@@ -24,30 +48,30 @@ Item{
             border.left: 5; border.top: 5
             border.right: 5; border.bottom: 5
         }
-        Loader{
-            id: portraitLoader
-            height: 200
-            width: 200
-            sourceComponent: portraitComponent
-            anchors.top: parent.top
-            anchors.topMargin: 20
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-    }
-
-    Component{
-        id: portraitComponent
-        Image{
-            id: portraitImage
+        Chart{
+            id: chartTest
             anchors.fill: parent
-            antialiasing: true
-            cache: true
-            fillMode: Image.Stretch
-            smooth: true
+            anchors.margins: 10
+            chartAnimated: true
+            property var data
+            chartAnimationEasing: Easing.InOutCubic
+            chartAnimationDuration: 500
+            chartType: Charts.ChartType.LINE
             Component.onCompleted: {
-                if(mainWindowContext.m_model)
-                {
-                    portraitImage.source = mainWindowContext.m_model.portrait
+                chartData = {
+                    labels: ["January", "February", "March", "April", "May", "June", "July"],
+                    datasets: [
+                        {
+                            label: mainWindowContext.m_model.name,
+                            fillColor: "rgba(220,220,220,0.2)",
+                            strokeColor: "rgba(220,220,220,1)",
+                            pointColor: "rgba(220,220,220,1)",
+                            pointStrokeColor: "#24f708",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [5, 59, 80, 81, 56, 55, 40]
+                        }
+                    ]
                 }
             }
         }

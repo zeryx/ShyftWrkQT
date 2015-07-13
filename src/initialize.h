@@ -12,7 +12,6 @@
 class Initialize : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(READ notused NOTIFY loggedInSuccess)
 public:
     explicit Initialize(QObject *parent = 0);
 public:
@@ -37,24 +36,33 @@ public:
 
     void start();
 
+    bool updateCfgFile(QJsonObject);
+
+    bool readCfgFile();
+    Q_INVOKABLE void setJsonConfig(QString, QVariant);
+
+    Q_INVOKABLE QString getJsonConfig(QString)const;
+
 
 signals:
    void loggedInAuth(bool);
 
 public slots:
 
-    void authorize(QString, QString, QString);
+    void authorize();
 
 private:
     QObject* thisQMLBinding;
 
-    QSortFilterProxyModel* thisProxy;
+    QJsonObject confMap;
 
-    StaffModel* thisStaff;
+    QSortFilterProxyModel thisProxy;
+
+    StaffModel thisStaff;
 
     QList<QObject*> thisTable;
 
-    QQmlApplicationEngine* thisEngine;
+    QQmlApplicationEngine thisEngine;
 };
 
 #endif // INITIALIZE_H

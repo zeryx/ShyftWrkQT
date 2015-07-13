@@ -5,20 +5,18 @@ Item{
     id: loginAssetsRoot
     opacity: 1
     objectName: "loginContext"
-    property string m_username
-    property string m_password
-    property string m_organisation
     signal failMessage
     onFailMessage: {
         invalidCred.opacity = 1
     }
     function inputFinished(){
-        if(loginAssetsRoot.m_username && loginAssetsRoot.m_password && loginAssetsRoot.m_organisation)
+        if(usernameInputField.text && passwordInputField.text && organisationInputField.text)
         {
+            initialize.setJsonConfig("username", usernameInputField.text)
+            initialize.setJsonConfig("password", passwordInputField.text)
+            initialize.setJsonConfig("organisation", organisationInputField.text)
             initialize.loggedInAuth.connect(mainWindowContext.loginAuth)
-            mainWindowContext.authRequested(loginAssetsRoot.m_username,
-                                             loginAssetsRoot.m_password,
-                                             loginAssetsRoot.m_organisation)
+            mainWindowContext.authRequested()
         }
     }
 
@@ -62,13 +60,16 @@ Item{
             height: 25
             width: 200
             activeFocusOnPress: true
-            onTextChanged: {loginAssetsRoot.m_username = usernameInputField.text}
+            selectByMouse: true
             KeyNavigation.tab: passwordInputField
             BorderImage {
                 id: usernameBorder
                 source: "../assets/searchbox.jpg"
                 anchors.fill: parent
                 z: -1
+            }
+            Component.onCompleted: {
+                text = initialize.getJsonConfig("username")
             }
         }
     }
@@ -98,7 +99,7 @@ Item{
             width: 200
             echoMode: TextInput.Password
             activeFocusOnPress: true
-            onTextChanged: {loginAssetsRoot.m_password = passwordInputField.text}
+            selectByMouse: true
             KeyNavigation.tab: organisationInputField
             BorderImage {
                 id: passwordBorder
@@ -106,7 +107,6 @@ Item{
                 anchors.fill: parent
                 z: -1
             }
-
         }
     }
 
@@ -136,13 +136,16 @@ Item{
             height: 25
             width: 200
             activeFocusOnPress: true
-            onTextChanged: {loginAssetsRoot.m_organisation = organisationInputField.text}
+            selectByMouse: true
             KeyNavigation.tab: loginButton
             BorderImage {
                 id: organisationBorder
                 source: "../assets/searchbox.jpg"
                 anchors.fill: parent
                 z:-1
+            }
+            Component.onCompleted: {
+                text = initialize.getJsonConfig("organisation")
             }
         }
 
@@ -165,5 +168,12 @@ Item{
 
             onReleased: loginAssetsRoot.inputFinished()
         }
+    }
+    CheckBox{
+        id: rememberInfoCheck
+        anchors.verticalCenter: loginButton.verticalCenter
+        anchors.left: loginButton.right
+        anchors.leftMargin: 15
+        text: qsTr("remember username and password")
     }
 }

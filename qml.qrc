@@ -13,7 +13,6 @@
         <file>qml/MenuWidgets/LoginWindow.qml</file>
         <file>qml/MenuWidgets/MainWindow.qml</file>
         <file>qml/MenuWidgets/EditorWindow.qml</file>
-        <file>qml/assets/close_button.zvg</file>
         <file>qml/MenuWidgets/ViewerWindow.qml</file>
     </qresource>
 </RCC>

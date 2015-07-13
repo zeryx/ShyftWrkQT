@@ -148,10 +148,10 @@ bool RestClient::requestStaffChange(EmployeeData * newEmployeeData, restModify e
 
 void RestClient::genericResponse(QNetworkReply *reply){
     QJsonDocument tmp;
-    QJsonParseError *jError = new QJsonParseError;
-    tmp = QJsonDocument::fromJson(reply->readAll(), jError);
-    if(jError->error != QJsonParseError::NoError){
-        qDebug()<<jError->errorString();
+    QJsonParseError jError;
+    tmp = QJsonDocument::fromJson(reply->readAll(), &jError);
+    if(jError.error != QJsonParseError::NoError){
+        qDebug()<<jError.errorString();
         emit errorDetected();
     }
     else{

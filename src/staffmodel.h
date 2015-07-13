@@ -4,6 +4,7 @@
 #include <QList>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
+#include <QMap>
 #include "employeedata.h"
 #include "restclient.h"
 class StaffModel : public RestClient
@@ -14,7 +15,6 @@ class StaffModel : public RestClient
  *  QSortFilterProxyModel for adaptive search functionality*/
 
     Q_OBJECT
-
 public:
 
     typedef QList<EmployeeData*>::const_iterator const_iterator;
@@ -28,9 +28,6 @@ public:
         nameRole=Qt::UserRole+1,
         positionRole,
         portraitRole,
-        avgShiftsRole,
-        synergyRole,
-        avgPerformanceRole,
     };
     //virtual inherited members from QAbstractTableModel
 public:
