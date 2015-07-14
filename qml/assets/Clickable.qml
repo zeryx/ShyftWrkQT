@@ -21,7 +21,7 @@ Image {
     Behavior on scale{
         NumberAnimation{
             duration: 100
-            easing.type: Easing.InOutCubic
+            easing.type: Easing.InOutQuad
         }
     }
 
@@ -66,11 +66,17 @@ Image {
     transitions: [
         Transition{
             from: ""; to:"Hovering"
-            ColorAnimation {duration: 200}
+            ColorAnimation {
+                duration: 2000
+                easing.type: Easing.InOutQuad
+            }
         },
         Transition{
             from: "*"; to: "Pressed"
-            ColorAnimation{duration: 10}
+            ColorAnimation{
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
         }
     ]
     ColorOverlay{

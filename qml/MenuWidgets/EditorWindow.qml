@@ -5,20 +5,12 @@ import "../"
 Item{
     id: root
     opacity: 1
-    property url cachedImageSource
-    ScrollableEmployeeColumn{
-        id: employeeColumn
-        width: 160
-        height: parent.height
-        anchors.right: parent.right
-        anchors.top: parent.top
-        z:-1
-    }
-
+    property string cachedImageSource
+    property string mode
     Button{
         anchors.top: root.top
         anchors.topMargin: 45
-        anchors.right: employeeColumn.left
+        anchors.right: parent.right
         anchors.rightMargin: 10
         height: 40
         width: 75
@@ -52,14 +44,20 @@ Item{
         width: 200
         height: 200
         Component.onCompleted: {
-            if(mainWindowContext.m_model)
+            if(mainWindowContext.m_model) //if this window was made by edit person, auto-populate edit params
             {
                 active = false;
                 root.cachedImageSource = mainWindowContext.m_model.portrait
                 sourceComponent = cachedComponent;
                 active = true;
-                nameField.text = mainWindowContext.m_model.name
+                firstNameField.text = mainWindowContext.m_model.name
                 positionsField.text = mainWindowContext.m_model.position
+                uidField.text = mainWindowContext.m_model.uid
+                uidField.readOnly = true
+                root.mode = "edit"
+            }
+            else{
+                root.mode = "new"
             }
         }
     }
@@ -118,22 +116,42 @@ Item{
     }
 
     TextField{
-        id: nameField
+        id: firstNameField
         anchors.verticalCenter: imageImportLoader.verticalCenter
-        anchors.right: employeeColumn.left
+        anchors.right: parent.right
         anchors.rightMargin: 25
         width: 300
-        placeholderText: qsTr("Enter Name")
+        placeholderText: qsTr("Enter first name.")
+        font.family: "abel"
+    }
+
+    TextField{
+        id: lastNameField
+        anchors.top: firstNameField.bottom
+        anchors.topMargin: 15
+        anchors.horizontalCenter: firstNameField.horizontalCenter
+        width: 300
+        placeholderText: qsTr("Enter last name.")
+        font.family: "abel"
+    }
+
+    TextField{
+        id: uidField
+        anchors.top: lastNameField.bottom
+        anchors.topMargin: 15
+        anchors.horizontalCenter: lastNameField.horizontalCenter
+        width: 300
+        placeholderText: qsTr("Enter shyft id, if applicable.")
         font.family: "abel"
     }
 
     TextField{
         id: positionsField
-        anchors.top: nameField.bottom
-        anchors.horizontalCenter: nameField.horizontalCenter
+        anchors.top: uidField.bottom
+        anchors.horizontalCenter: lastNameField.horizontalCenter
         anchors.topMargin: 15
         width: 300
-        placeholderText: qsTr("Enter Positions worked")
+        placeholderText: qsTr("Enter positions, separated by commas")
         font.family: "abel"
     }
 
@@ -143,10 +161,16 @@ Item{
         anchors.top: positionsField.bottom
         anchors.horizontalCenter: positionsField.horizontalCenter
         anchors.topMargin: 10
-        property var m_portrait
-        property var m_name
-        property var m_positions
-        signal addPerson(var portrait, var name, var position, var resturant)
+        property string m_portrait
+        property string m_fname
+        property string m_lname
+        property string m_positions
+        property string m_uid: "" // can be null
+        signal modifyPerson
+        onModifyPerson: {
+            mainWindowContext.swapApps("MenuWidgets/MainWindow.qml")
+        }
+
         height:40
         width:100
         Text{
@@ -157,12 +181,21 @@ Item{
         MouseArea{
             anchors.fill: parent
             onClicked: {
-                if(positionsField.text.length > 0 && nameField.text.length > 0 && imageImportLoader.active === true) // if every field has text
+                if(positionsField.text.length > 0 &&
+                        firstNameField.text.length > 0 &&
+                        lastNameField.text.length > 0 &&
+                        imageImportLoader.active === true) // if every major field has stuff
                 {
-                    m_name = nameField.text;
-                    m_positions = positionsField.text
-                    m_portrait = fileDialog.fileUrl
-                    console.log("field was clicked")
+                    var portraitstr = root.cachedImageSource.replace("http://www.shyftwrk.com", "..")
+                    console.log(portraitstr)
+                    masterModel.setJson("first name", firstNameField.text)
+                    masterModel.setJson("last name", lastNameField.text)
+                    masterModel.setJson("positions", positionsField.text)
+                    masterModel.setJson("portrait", portraitstr.toString())
+                    masterModel.setJson("uid", uidField.text);
+                    masterModel.setJson("mode", root.mode)
+                    acceptButton.modifyPerson.connect(masterModel.alterStaff)
+                    acceptButton.modifyPerson()
                 }
             }
         }

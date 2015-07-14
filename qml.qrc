@@ -14,5 +14,7 @@
         <file>qml/MenuWidgets/MainWindow.qml</file>
         <file>qml/MenuWidgets/EditorWindow.qml</file>
         <file>qml/MenuWidgets/ViewerWindow.qml</file>
+        <file>qml/assets/icons/close_button.zvg</file>
+        <file>qml/assets/icons/user-add-512px.svg</file>
     </qresource>
 </RCC>

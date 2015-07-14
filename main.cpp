@@ -1,8 +1,5 @@
 ﻿#include <QApplication>
 #include <QObject>
-#include <QQmlComponent>
-#include <QQmlContext>
-#include <QDebug>
 #include <src/initialize.h>
 int main(int argc, char *argv[])
 {

@@ -45,6 +45,7 @@ FocusScope {
                 oldText = textInput.text
             }
         }
+        Component.onCompleted: textInput.text = ""
 
         MouseArea{
             anchors.fill: parent
@@ -100,4 +101,3 @@ FocusScope {
         }
     ]
 }
-

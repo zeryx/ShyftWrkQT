@@ -101,7 +101,7 @@ Flickable{
                             id:deselectButton
                             anchors.top: parent.top
                             anchors.right: parent.right
-                            source:"close_button.zvg"
+                            source:"icons/close_button.zvg"
                             fillMode: Image.PreserveAspectFit
                             height: 25
                             width: 25
@@ -131,12 +131,12 @@ Flickable{
                             anchors.top: portraitText.bottom
                             text: qsTr(thisSelectionLoader.loaderModel.name)
                         }
-                        Text{
-                            id: positionText
-                            anchors.top: nameText.bottom
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: qsTr(thisSelectionLoader.loaderModel.position)
-                        }
+//                        Text{
+//                            id: positionText
+//                            anchors.top: nameText.bottom
+//                            anchors.horizontalCenter: parent.horizontalCenter
+//                            text: qsTr(thisSelectionLoader.loaderModel.position)
+//                        }
                     }
                 }
 
@@ -160,7 +160,7 @@ Flickable{
                         }
 
                         Image{
-                            id: portraitText
+                            id: portrait
                             source: model.portrait
                             smooth: true
                             antialiasing: true
@@ -170,20 +170,31 @@ Flickable{
                             height: 100
                             width: 100
                             fillMode: Image.PreserveAspectCrop
+                            onStatusChanged: {
+                                if(portrait.status== Image.Loading)
+                                    loadingIndicator.running = true
+                            else if(portrait.status== Image.Ready)
+                                    loadingIndicator.running = false;
+                            }
+                        }
+                        BusyIndicator{
+                            z:1
+                            id: loadingIndicator
+                            anchors.centerIn: portrait
                         }
 
                         Text{
                             id: nameText
                             anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.top: portraitText.bottom
+                            anchors.top: portrait.bottom
                             text: qsTr(model.name)
                         }
-                        Text{
-                            id: positionText
-                            anchors.top: nameText.bottom
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: qsTr(model.position)
-                        }
+//                        Text{
+//                            id: positionText
+//                            anchors.top: nameText.bottom
+//                            anchors.horizontalCenter: parent.horizontalCenter
+//                            text: qsTr(model.position)
+//                        }
                     }
                 }
             }

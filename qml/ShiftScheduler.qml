@@ -11,10 +11,11 @@ Rectangle{
 
     MyAssets.Calendar {
         id: daySelector
-        color: themeSecondary
-        width: 200; height: 25
         z:100
-        anchors.horizontalCenter: root.horizontalCenter
+        anchors.top: parent.top
+        anchors.left: parent.left
+        height: 75
+        width: mainWindowContext.width
     }
     MyAssets.ScheduleViewingPane{
         height: parent.height - daySelector.height-20

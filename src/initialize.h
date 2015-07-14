@@ -39,9 +39,12 @@ public:
     bool updateCfgFile(QJsonObject);
 
     bool readCfgFile();
+
     Q_INVOKABLE void setJsonConfig(QString, QVariant);
 
     Q_INVOKABLE QString getJsonConfig(QString)const;
+
+    Q_INVOKABLE void windowChange();
 
 
 signals:

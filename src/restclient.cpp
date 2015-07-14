@@ -16,8 +16,7 @@ RestClient::RestClient(QObject *parent) :
 
 bool RestClient::requestLogin(QString &username, QString &password, QString &organisation){
     QEventLoop pause;
-    connect(this, SIGNAL(successfulRequest()), &pause, SLOT(quit()));
-    connect(this, SIGNAL(errorDetected()), &pause, SLOT(quit())); // if you login or an error occurs, break the event loop
+    connect(this, SIGNAL(responseCompleted()), &pause, SLOT(quit()));
 
     thisRestful = new QNetworkAccessManager(this);
     connect(thisRestful, SIGNAL(finished(QNetworkReply*)), this, SLOT(genericResponse(QNetworkReply*)));
@@ -52,8 +51,7 @@ void RestClient::logout(){
 
 QJsonObject RestClient::requestDataRefresh(){
     QEventLoop pause;
-    connect(this, SIGNAL(successfulRequest()), &pause, SLOT(quit()));
-    connect(this, SIGNAL(errorDetected()), &pause, SLOT(quit()));
+    connect(this, SIGNAL(responseCompleted()), &pause, SLOT(quit()));
 
     thisRestful = new QNetworkAccessManager(this);
     connect(thisRestful, SIGNAL(finished(QNetworkReply*)), this, SLOT(genericResponse(QNetworkReply*)));
@@ -73,6 +71,9 @@ QJsonObject RestClient::requestDataRefresh(){
 }
 
 bool RestClient::requestShiftChange(SchedulerData* newSchedulerData, QString UID , restModify enumerator){
+    QEventLoop pause;
+    connect(this, SIGNAL(responseCompleted()), &pause, SLOT(quit()));
+
     thisRestful = new QNetworkAccessManager(this);
     connect(thisRestful, SIGNAL(finished(QNetworkReply*)), this, SLOT(genericResponse(QNetworkReply*)));
     thisRestful->setCookieJar(thisSession);
@@ -95,7 +96,7 @@ bool RestClient::requestShiftChange(SchedulerData* newSchedulerData, QString UID
         params.addQueryItem("uid", UID);
         params.addQueryItem("shift id", QString(newSchedulerData->shiftID()));
         break;
-    case restRemove://not implemented yet on the server
+    case restRemove:
         request.setUrl(QUrl(baseUrl + "/data/shift=delete"));
         params.addQueryItem("shift id", QString(newSchedulerData->shiftID()));
         break;
@@ -103,16 +104,22 @@ bool RestClient::requestShiftChange(SchedulerData* newSchedulerData, QString UID
     QNetworkReply *reply = thisRestful->post(request, params.query(QUrl::FullyEncoded).toUtf8());
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(errorResponse(QNetworkReply::NetworkError)));
     thisRestful->setParent(reply);
+    pause.exec();
 
     if(thisDataStream.value("queryCode").toString() == "success")
         return true;
-    else
+    else{
+        qDebug()<<thisDataStream.value("reason").toString();
         return false;
+    }
 }
 
 
 bool RestClient::requestStaffChange(EmployeeData * newEmployeeData, restModify enumerator){
+    QEventLoop pause;
+    connect(this, SIGNAL(responseCompleted()), &pause, SLOT(quit()));
     thisRestful = new QNetworkAccessManager(this);
+    thisRestful->setCookieJar(thisSession);
     connect(thisRestful, SIGNAL(finished(QNetworkReply*)), this, SLOT(genericResponse(QNetworkReply*)));
     QNetworkRequest request;
     QUrlQuery params;
@@ -121,70 +128,66 @@ bool RestClient::requestStaffChange(EmployeeData * newEmployeeData, restModify e
     case restAdd: //if this person isn't aleady in the database, an empty string is passed for "UID"
         request.setUrl(QUrl(baseUrl + "/data/staff=new"));
         params.addQueryItem("name", newEmployeeData->name());
-        params.addQueryItem("UID", newEmployeeData->uid());
+        params.addQueryItem("uid", newEmployeeData->uid());
         params.addQueryItem("positions", newEmployeeData->positions());
         params.addQueryItem("portrait", newEmployeeData->portrait().toString());
         break;
     case restEdit:
         request.setUrl(QUrl(baseUrl + "/data/staff=edit"));
         params.addQueryItem("name", newEmployeeData->name());
-        params.addQueryItem("UID", newEmployeeData->uid());
+        params.addQueryItem("uid", newEmployeeData->uid());
         params.addQueryItem("positions", newEmployeeData->positions());
         params.addQueryItem("portrait", newEmployeeData->portrait().toString());
         break;
-    case restRemove: // doesn't actually delete the person, just removes this organisation from it's organisations column
+    case restRemove: // doesn't actually delete the person, just removes this organisation from this organisation
         request.setUrl(QUrl(baseUrl + "/data/staff=delete"));
-        params.addQueryItem("UID", newEmployeeData->uid());
+        params.addQueryItem("uid", newEmployeeData->uid());
         break;
     }
     QNetworkReply *reply = thisRestful->post(request, params.query(QUrl::FullyEncoded).toUtf8());
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(errorResponse(QNetworkReply::NetworkError)));
     thisRestful->setParent(reply);
+    pause.exec();
     if(thisDataStream.value("queryCode").toString() == "success")
         return true;
-    else
+    else{
+        qDebug()<<thisDataStream.value("reason").toString();
         return false;
+    }
 }
-
 void RestClient::genericResponse(QNetworkReply *reply){
     QJsonDocument tmp;
     QJsonParseError jError;
     tmp = QJsonDocument::fromJson(reply->readAll(), &jError);
     if(jError.error != QJsonParseError::NoError){
         qDebug()<<jError.errorString();
-        emit errorDetected();
+        emit responseCompleted();
     }
     else{
         thisDataStream = tmp.object();
-        emit successfulRequest();
+        emit responseCompleted();
     }
 }
-
-
 void RestClient::errorResponse(QNetworkReply::NetworkError err){
-    QVariantMap tmp;
     if(err==QNetworkReply::ConnectionRefusedError)
-        tmp["error"] = "connection refused.";
+        thisDataStream["reason"] = "server is offline";
     else if(err==QNetworkReply::ContentNotFoundError)
-        tmp["error"] = "content not found";
+        thisDataStream["reason"] = "content not found";
     else if(err==QNetworkReply::RemoteHostClosedError)
-        tmp["error"] = "socket closed by server.";
+        thisDataStream["reason"] = "socket closed by server.";
     else if(err==QNetworkReply::HostNotFoundError)
-        tmp["error"] = "invalid hostname.";
+        thisDataStream["reason"] = "invalid hostname.";
     else if(err==QNetworkReply::TimeoutError)
-        tmp["error"] = "connection timed out.";
+        thisDataStream["reason"] = "connection timed out.";
     else if(err==QNetworkReply::OperationCanceledError)
-        tmp["error"] = "operation aborted before completion.";
+        thisDataStream["reason"] = "operation aborted before completion.";
     else if(err==QNetworkReply::ContentAccessDenied)
-        tmp["error"] = "access denied, http 401 error.";
+        thisDataStream["reason"] = "access denied, http 401 error.";
     else if(err==QNetworkReply::ContentOperationNotPermittedError)
-        tmp["error"] = "invalid interaction with service.";
+        thisDataStream["reason"] = "invalid interaction with service.";
     else if(err==QNetworkReply::ProtocolUnknownError)
-        tmp["error"] = "service does not understand protocol used.";
+        thisDataStream["reason"] = "service does not understand protocol used.";
     else if(err==QNetworkReply::UnknownNetworkError)
-        tmp["error"] = "unknown network error detected.";
-    qDebug()<<tmp;
-    emit errorDetected();
+        thisDataStream["reason"] = "unknown network error detected.";
+    emit responseCompleted();
 }
-
-

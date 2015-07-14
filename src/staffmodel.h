@@ -28,6 +28,7 @@ public:
         nameRole=Qt::UserRole+1,
         positionRole,
         portraitRole,
+        uidRole
     };
     //virtual inherited members from QAbstractTableModel
 public:
@@ -44,12 +45,6 @@ public:
 
     bool loginAndPull(QString username, QString password, QString organisation);
 public:
-
-
-    bool addPerson(EmployeeData* person);
-
-    bool removePerson(int index);
-
     EmployeeData* getPerson(size_t index);
 
     void setHeaderData( const QString &value);
@@ -64,10 +59,17 @@ public:
 
     void setQmlBinding(QObject*);
 
+    bool populate(QJsonObject);
+public: // things that get called from qml
+    Q_INVOKABLE void alterStaff();
+
+    Q_INVOKABLE void setJson(QString, QVariant);
+
 
 public slots:
 
     void setHeaderDataSlot(const QString &value);
+
 
 signals:
 
@@ -78,12 +80,10 @@ protected:
     QHash<int, QByteArray> roleNames() const;
 
     QHash<qint32, QString> headers;
-
+    QJsonObject storeStream;
 public:
 
     QList<EmployeeData*> m_data;
-
-    QSortFilterProxyModel* m_proxy;
 
 
 

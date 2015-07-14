@@ -34,9 +34,8 @@ public: //  http request methods
     bool requestStaffChange(EmployeeData*, restModify = restAdd);
 
 signals:
-    void successfulRequest();
+    void responseCompleted();
 
-    void errorDetected();
 
 private slots: // standard response handler for signal information
     void genericResponse(QNetworkReply *reply);

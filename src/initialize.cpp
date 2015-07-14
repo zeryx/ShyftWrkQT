@@ -101,12 +101,10 @@ void Initialize::configure(){
     }
     thisEngine.rootContext()->setContextProperty("tableModel", QVariant::fromValue(thisTable));
     thisEngine.rootContext()->setContextProperty("masterModel", &thisStaff);
-    thisEngine.rootContext()->setContextProperty("searchFilteredModel", &thisProxy);
+    thisEngine.rootContext()->setContextProperty("searchModel", &thisProxy);
     thisEngine.rootContext()->setContextProperty("headerList", thisStaff.headerList());
     emit loggedInAuth(true);
 
-    QObject *search= thisQMLBinding->findChild<QObject*>("searchColumnContext");
-    QObject::connect(search, SIGNAL(hasText(QString)), &thisProxy, SLOT(setFilterRegExp(QString)));
 }
 
 void Initialize::start(){
@@ -120,4 +118,9 @@ void Initialize::start(){
 
     connect(mainAppStart, SIGNAL(authRequested()),
             this, SLOT(authorize()));
+}
+
+void Initialize::windowChange(){ // every time one of the windows change, search for children
+    QObject* search= thisQMLBinding->findChild<QObject*>("searchColumnContext");
+    QObject::connect(search, SIGNAL(hasText(QString)),&thisProxy, SLOT(setFilterRegExp(QString)));
 }

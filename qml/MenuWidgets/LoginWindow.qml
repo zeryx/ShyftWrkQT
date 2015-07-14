@@ -5,12 +5,13 @@ Item{
     id: loginAssetsRoot
     opacity: 1
     objectName: "loginContext"
-    signal failMessage
+    signal failMessage(string msg)
     onFailMessage: {
-        invalidCred.opacity = 1
+        invalidText.text = qsTr(msg)
+        failMessageObject.opacity = 1
     }
     function inputFinished(){
-        if(usernameInputField.text && passwordInputField.text && organisationInputField.text)
+        if(usernameInputField.text.length >0 && passwordInputField.text.length >0 && organisationInputField.text.length >0)
         {
             initialize.setJsonConfig("username", usernameInputField.text)
             initialize.setJsonConfig("password", passwordInputField.text)
@@ -21,7 +22,7 @@ Item{
     }
 
     Item{
-        id: invalidCred
+        id: failMessageObject
         anchors.top: loginButton.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         opacity:0
@@ -30,16 +31,50 @@ Item{
         Text{
             id: invalidText
             anchors.centerIn: parent
-            text: qsTr("Invalid username/password/organisation!")
             font.family: "Abel"
             color: Qt.lighter("red")
         }
     }
+    Item{
+        id: organisation
+        anchors.top: parent.top
+        anchors.topMargin: 60
+        x: parent.width/2
+        height: organisationPrompt.height+30+organisationInputField.height
+        width: organisationInputField.width+30
 
+        Text{
+            id: organisationPrompt
+            anchors.horizontalCenter: organisation.horizontalCenter
+            anchors.top: organisation.top
+            text: qsTr("Company")
+            font.pointSize: 25
+            font.family: "Abel"
+        }
+        TextInput{
+            id: organisationInputField
+            anchors.horizontalCenter: organisationPrompt.horizontalCenter
+            anchors.top: organisationPrompt.bottom
+            height: 25
+            width: 200
+            activeFocusOnPress: true
+            selectByMouse: true
+            KeyNavigation.tab: usernameInputField
+            BorderImage {
+                id: organisationBorder
+                source: "../assets/searchbox.jpg"
+                anchors.fill: parent
+                z:-1
+            }
+            Component.onCompleted: {
+                text = initialize.getJsonConfig("organisation")
+            }
+        }
+    }
     Item{
         id: username
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
+        anchors.horizontalCenter: organisation.horizontalCenter
+        anchors.top: organisation.bottom
         anchors.topMargin: 25
         height: usernamePrompt.height+30+usernameInputField.height
         width: usernameInputField.width+30
@@ -78,9 +113,12 @@ Item{
         id: password
         anchors.top: username.bottom
         anchors.topMargin: 60
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenter: username.horizontalCenter
         height: passwordPrompt.height+30+passwordInputField.height
         width: passwordInputField.width+30
+        Keys.onReturnPressed: {
+            loginAssetsRoot.inputFinished()
+        }
         Text{
             id: passwordPrompt
             anchors.horizontalCenter: password.horizontalCenter
@@ -100,7 +138,7 @@ Item{
             echoMode: TextInput.Password
             activeFocusOnPress: true
             selectByMouse: true
-            KeyNavigation.tab: organisationInputField
+            KeyNavigation.tab: loginButton
             BorderImage {
                 id: passwordBorder
                 source: "../assets/searchbox.jpg"
@@ -110,53 +148,13 @@ Item{
         }
     }
 
-    Item{
-        id: organisation
-        anchors.top: password.bottom
-        anchors.topMargin: 60
-        anchors.horizontalCenter: parent.horizontalCenter
-        height: organisationPrompt.height+30+organisationInputField.height
-        width: organisationInputField.width+30
-        Keys.onReturnPressed: {
-            loginAssetsRoot.inputFinished()
-        }
 
-        Text{
-            id: organisationPrompt
-            anchors.horizontalCenter: organisation.horizontalCenter
-            anchors.top: organisation.top
-            text: qsTr("Company")
-            font.pointSize: 25
-            font.family: "Abel"
-        }
-        TextInput{
-            id: organisationInputField
-            anchors.horizontalCenter: organisationPrompt.horizontalCenter
-            anchors.top: organisationPrompt.bottom
-            height: 25
-            width: 200
-            activeFocusOnPress: true
-            selectByMouse: true
-            KeyNavigation.tab: loginButton
-            BorderImage {
-                id: organisationBorder
-                source: "../assets/searchbox.jpg"
-                anchors.fill: parent
-                z:-1
-            }
-            Component.onCompleted: {
-                text = initialize.getJsonConfig("organisation")
-            }
-        }
-
-
-    }
 
     Button{
         id: loginButton
-        anchors.top: organisation.bottom
+        anchors.top: password.bottom
         anchors.topMargin: 25
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenter: password.horizontalCenter
         height: 45
         width: 45
         text:qsTr("login")

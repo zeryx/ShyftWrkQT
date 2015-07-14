@@ -13,7 +13,7 @@ public: //-- gets
     EmployeeData();
 
     EmployeeData( const QString &name, const QString &uid, const QString &positions,
-                  const QUrl &portrait, const QList<SchedulerData*> &schedulerData, QObject* parent =0);
+                  const QUrl &portrait, const QList<SchedulerData*> *schedulerData =  new QList<SchedulerData*>, QObject* parent =0);
 
     QUrl portrait()const;
 

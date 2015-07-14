@@ -5,14 +5,14 @@ EmployeeData::EmployeeData()
 }
 
 EmployeeData::EmployeeData(const QString &name, const QString &uid,
-                           const QString &position, const QUrl &portrait, const QList<SchedulerData*> &schedulerData,
+                           const QString &position, const QUrl &portrait, const QList<SchedulerData*> *schedulerData,
                            QObject *parent):
 QObject(parent){
     this->setPortrait(portrait);
     this->setName(name);
     this->setPositions(position);
     this->setUID(uid);
-    this->setSchedulerData(schedulerData);
+    this->setSchedulerData(*schedulerData);
 }
 
 //==-- gets
