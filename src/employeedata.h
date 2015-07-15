@@ -5,19 +5,22 @@
 #include <QDebug>
 #include <QVariant>
 #include "schedulerdata.h"
-class EmployeeData : public QObject
+class EmployeeData : public QObject // the staff data object class, contains all info about a staff member, contains
+        // a subclass of scheduler data in a QList.
 {
     Q_OBJECT
 public: //-- gets
 
     EmployeeData();
 
-    EmployeeData( const QString &name, const QString &uid, const QString &positions,
+    EmployeeData( const QString &first_name, const QString &last_name, const QString &uid, const QString &positions,
                   const QUrl &portrait, const QList<SchedulerData*> *schedulerData =  new QList<SchedulerData*>, QObject* parent =0);
 
     QUrl portrait()const;
 
-    QString name()const;
+    QString firstName()const;
+
+    QString lastName()const;
 
     QString positions()const;
 
@@ -37,7 +40,9 @@ public: //-- sets
 
     void setPortrait(QUrl newPortrait);
 
-    void setName(QString newName);
+    void setFirstName(QString newName);
+
+    void setLastName(QString newName);
 
     void setPositions(QString newPositions);
 
@@ -60,7 +65,9 @@ signals:
 
     void portraitChanged();
 
-    void nameChanged();
+    void firstNameChanged();
+
+    void lastNameChanged();
 
     void positionsChanged();
 
@@ -73,7 +80,8 @@ protected:
 
     QUrl thisPortrait;
     QString thisUID;
-    QString thisName;
+    QString thisFirstName;
+    QString thisLastName;
     QString thisPositions;
     QList<SchedulerData*> thisSchedulerData;
 };

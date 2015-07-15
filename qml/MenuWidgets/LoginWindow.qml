@@ -5,36 +5,17 @@ Item{
     id: loginAssetsRoot
     opacity: 1
     objectName: "loginContext"
-    signal failMessage(string msg)
-    onFailMessage: {
-        invalidText.text = qsTr(msg)
-        failMessageObject.opacity = 1
-    }
     function inputFinished(){
         if(usernameInputField.text.length >0 && passwordInputField.text.length >0 && organisationInputField.text.length >0)
         {
-            initialize.setJsonConfig("username", usernameInputField.text)
-            initialize.setJsonConfig("password", passwordInputField.text)
-            initialize.setJsonConfig("organisation", organisationInputField.text)
-            initialize.loggedInAuth.connect(mainWindowContext.loginAuth)
+            QmlManager.setJsonConfig("username", usernameInputField.text)
+            QmlManager.setJsonConfig("password", passwordInputField.text)
+            QmlManager.setJsonConfig("organisation", organisationInputField.text)
+            QmlManager.loginAuth.connect(mainWindowContext.mainGate)
             mainWindowContext.authRequested()
         }
     }
 
-    Item{
-        id: failMessageObject
-        anchors.top: loginButton.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-        opacity:0
-        height: 15
-        width: 30
-        Text{
-            id: invalidText
-            anchors.centerIn: parent
-            font.family: "Abel"
-            color: Qt.lighter("red")
-        }
-    }
     Item{
         id: organisation
         anchors.top: parent.top
@@ -55,6 +36,7 @@ Item{
             id: organisationInputField
             anchors.horizontalCenter: organisationPrompt.horizontalCenter
             anchors.top: organisationPrompt.bottom
+            anchors.topMargin: 15
             height: 25
             width: 200
             activeFocusOnPress: true
@@ -67,7 +49,7 @@ Item{
                 z:-1
             }
             Component.onCompleted: {
-                text = initialize.getJsonConfig("organisation")
+                text = QmlManager.getJsonConfig("organisation")
             }
         }
     }
@@ -75,7 +57,7 @@ Item{
         id: username
         anchors.horizontalCenter: organisation.horizontalCenter
         anchors.top: organisation.bottom
-        anchors.topMargin: 25
+        anchors.topMargin: 30
         height: usernamePrompt.height+30+usernameInputField.height
         width: usernameInputField.width+30
         Text{
@@ -91,7 +73,7 @@ Item{
             id: usernameInputField
             anchors.horizontalCenter: usernamePrompt.horizontalCenter
             anchors.top: usernamePrompt.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 15
             height: 25
             width: 200
             activeFocusOnPress: true
@@ -104,7 +86,7 @@ Item{
                 z: -1
             }
             Component.onCompleted: {
-                text = initialize.getJsonConfig("username")
+                text = QmlManager.getJsonConfig("username")
             }
         }
     }
@@ -112,7 +94,7 @@ Item{
     Item{
         id: password
         anchors.top: username.bottom
-        anchors.topMargin: 60
+        anchors.topMargin: 30
         anchors.horizontalCenter: username.horizontalCenter
         height: passwordPrompt.height+30+passwordInputField.height
         width: passwordInputField.width+30
@@ -132,7 +114,7 @@ Item{
             id: passwordInputField
             anchors.horizontalCenter: passwordPrompt.horizontalCenter
             anchors.top: passwordPrompt.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 15
             height: 25
             width: 200
             echoMode: TextInput.Password
@@ -144,6 +126,9 @@ Item{
                 source: "../assets/searchbox.jpg"
                 anchors.fill: parent
                 z: -1
+            }
+            Component.onCompleted: {
+                text = QmlManager.getJsonConfig("password")
             }
         }
     }
@@ -173,5 +158,11 @@ Item{
         anchors.left: loginButton.right
         anchors.leftMargin: 15
         text: qsTr("remember username and password")
+        onClicked: {
+            QmlManager.setJsonConfig("username ")
+        }
+        Component.onCompleted: {
+
+        }
     }
 }

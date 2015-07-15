@@ -1,4 +1,4 @@
-#include "initialize.h"
+#include "qmlmanager.h"
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QFile>
@@ -7,24 +7,24 @@
 #include <QSortFilterProxyModel>
 #include <src/staffmodel.h>
 #include <QQmlApplicationEngine>
-Initialize::Initialize(QObject *parent){
+QmlManager::QmlManager(QObject *parent){
     Q_UNUSED(parent);
 }
 
-void Initialize::setJsonConfig(QString name, QVariant value){
+void QmlManager::setJsonConfig(QString name, QVariant value){ // replace this
     if(value.type() == QVariant::String)
-        confMap[name] = value.toString();
+        thisConf[name] = value.toString();
     else if(value.type() == QVariant::Int)
-        confMap[name] = value.toInt();
+        thisConf[name] = value.toInt();
     else if(value.type() == QVariant::Bool)
-        confMap[name] = value.toBool();
+        thisConf[name] = value.toBool();
 }
 
-QString Initialize::getJsonConfig(QString name)const{
-    return confMap[name].toString();
+QString QmlManager::getJsonConfig(QString name)const{ //replace this
+        return thisConf[name].toString();
 }
 
-bool Initialize::updateCfgFile(QJsonObject newObj){
+bool QmlManager::updateCfgFile(QJsonObject newObj){ //move this out of here, it ain't qml related
     QDir path = QDir::homePath();
     QFile cfgHelper;
     qDebug()<<path.mkpath("ShyftWrk");
@@ -46,7 +46,7 @@ bool Initialize::updateCfgFile(QJsonObject newObj){
     return 0;
 }
 
-bool Initialize::readCfgFile(){
+bool QmlManager::readCfgFile(){ //move this out of here, it ain't qml related
     QString path = QDir::homePath()+"/ShyftWrk/shyft.cnf";
     QFile cfgHelper(path);
     if(cfgHelper.exists()){
@@ -57,7 +57,7 @@ bool Initialize::readCfgFile(){
         cfgHelper.close();
         if(jErr->error == QJsonParseError::NoError)
         {
-            confMap = jsonDoc.object();
+            thisConf = jsonDoc.object();
             return 0;
         }
         else{
@@ -70,21 +70,22 @@ bool Initialize::readCfgFile(){
 
 }
 
-void Initialize::authorize(){
-    QString username = confMap["username"].toString();
-    QString password = confMap["password"].toString();
-    QString organisation = confMap["organisation"].toString();
+void QmlManager::authorize(){
+    QString username = thisConf["username"].toString();
+    QString password = thisConf["password"].toString();
+    QString organisation = thisConf["organisation"].toString();
     bool check = thisStaff.loginAndPull(username, password, organisation);
     if(check){
-        this->updateCfgFile(confMap);
+        this->updateCfgFile(thisConf);
         this->configure();
+        emit loginAuth(check);
     }
     else
-        emit loggedInAuth(check);
+        emit loginAuth(check);
 }
-void Initialize::configure(){
+void QmlManager::configure(){ // the program is now athorized to continue as it's recieved json data from server on org
     thisProxy.setSourceModel(&thisStaff);
-    thisProxy.setFilterRole(thisStaff.nameRole);
+    thisProxy.setFilterRole(thisStaff.firstNameRole | thisStaff.lastNameRole);
     thisProxy.setFilterCaseSensitivity(Qt::CaseInsensitive);
     thisProxy.setDynamicSortFilter(true);
 
@@ -100,18 +101,18 @@ void Initialize::configure(){
         thisTable.append(newColumn);
     }
     thisEngine.rootContext()->setContextProperty("tableModel", QVariant::fromValue(thisTable));
+    thisEngine.rootContext()->setContextProperty("headerList", thisStaff.headerList());
+
     thisEngine.rootContext()->setContextProperty("masterModel", &thisStaff);
     thisEngine.rootContext()->setContextProperty("searchModel", &thisProxy);
-    thisEngine.rootContext()->setContextProperty("headerList", thisStaff.headerList());
-    emit loggedInAuth(true);
-
 }
 
-void Initialize::start(){
+
+void QmlManager::start(){
     if(this->readCfgFile())
         qDebug()<<"no cfg file exists, will make later!";
     thisEngine.addImportPath(QStringLiteral("../ShyftWrkQT/qml"));
-    thisEngine.rootContext()->setContextProperty("initialize", this);
+    thisEngine.rootContext()->setContextProperty("QmlManager", this);
     thisEngine.load(QUrl(QStringLiteral("qrc:///qml/ShyftWrk.qml")));
     thisQMLBinding= thisEngine.rootObjects()[0];
     QObject *mainAppStart = thisQMLBinding->findChild<QObject*>("mainWindowContext");
@@ -120,7 +121,26 @@ void Initialize::start(){
             this, SLOT(authorize()));
 }
 
-void Initialize::windowChange(){ // every time one of the windows change, search for children
+void QmlManager::windowChange(){ // every time one of the windows change, run this stuff
     QObject* search= thisQMLBinding->findChild<QObject*>("searchColumnContext");
     QObject::connect(search, SIGNAL(hasText(QString)),&thisProxy, SLOT(setFilterRegExp(QString)));
 }
+
+//void QmlManager::dataNeedsRefresh(){
+//    thisTable.clear();
+//    this->configure();
+//    for(int i=0; i<thisStaff.headerSize(); i++)
+//    {
+//        QSortFilterProxyModel* newColumn = new QSortFilterProxyModel(this);
+//        //        pattern.setPattern(thisStaff->headerData(i).toString());
+//        newColumn->setSourceModel(&thisStaff);
+//        newColumn->setFilterRole(thisStaff.positionRole);
+//        newColumn->setFilterCaseSensitivity(Qt::CaseInsensitive);
+//        newColumn->setDynamicSortFilter(true);
+//        newColumn->setFilterRegExp(thisStaff.headerData(i).toString());
+//        thisTable.append(newColumn);
+//    }
+//    thisEngine.rootContext()->setContextProperty("tableModel", QVariant::fromValue(thisTable));
+//    thisEngine.rootContext()->setContextProperty("headerList", thisStaff.headerList());
+//}
+

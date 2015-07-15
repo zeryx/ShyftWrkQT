@@ -13,7 +13,7 @@ SOURCES += main.cpp \
     src/schedulerdata.cpp \
     src/restclient.cpp \
     src/staffModel.cpp \
-    src/initialize.cpp
+    src/qmlmanager.cpp
 
 RESOURCES += qml.qrc
 
@@ -29,5 +29,5 @@ HEADERS += \
     src/schedulerdata.h \
     src/restclient.h \
     src/staffmodel.h \
-    src/initialize.h
+    src/qmlmanager.h
 QMAKE_CXXFLAGS += -g

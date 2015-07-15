@@ -39,7 +39,6 @@ bool RestClient::requestLogin(QString &username, QString &password, QString &org
         return 1;
     }
     else{
-        qDebug()<<thisDataStream.value("reason").toString();
         return 0;
     }
 }
@@ -127,16 +126,17 @@ bool RestClient::requestStaffChange(EmployeeData * newEmployeeData, restModify e
     switch (enumerator) {
     case restAdd: //if this person isn't aleady in the database, an empty string is passed for "UID"
         request.setUrl(QUrl(baseUrl + "/data/staff=new"));
-        params.addQueryItem("name", newEmployeeData->name());
+        params.addQueryItem("first_name", newEmployeeData->firstName());
+        params.addQueryItem("last_name", newEmployeeData->lastName());
         params.addQueryItem("uid", newEmployeeData->uid());
-        params.addQueryItem("positions", newEmployeeData->positions());
         params.addQueryItem("portrait", newEmployeeData->portrait().toString());
         break;
     case restEdit:
         request.setUrl(QUrl(baseUrl + "/data/staff=edit"));
-        params.addQueryItem("name", newEmployeeData->name());
-        params.addQueryItem("uid", newEmployeeData->uid());
-        params.addQueryItem("positions", newEmployeeData->positions());
+        params.addQueryItem("first_name", newEmployeeData->firstName());
+        params.addQueryItem("last_name", newEmployeeData->lastName());
+        if(newEmployeeData->uid()!="")
+            params.addQueryItem("uid", newEmployeeData->uid());
         params.addQueryItem("portrait", newEmployeeData->portrait().toString());
         break;
     case restRemove: // doesn't actually delete the person, just removes this organisation from this organisation
@@ -158,7 +158,9 @@ bool RestClient::requestStaffChange(EmployeeData * newEmployeeData, restModify e
 void RestClient::genericResponse(QNetworkReply *reply){
     QJsonDocument tmp;
     QJsonParseError jError;
-    tmp = QJsonDocument::fromJson(reply->readAll(), &jError);
+    QByteArray data = reply->readAll();
+    qDebug()<<data;
+    tmp = QJsonDocument::fromJson(data, &jError);
     if(jError.error != QJsonParseError::NoError){
         qDebug()<<jError.errorString();
         emit responseCompleted();

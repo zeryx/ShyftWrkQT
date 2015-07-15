@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QMap>
 #include <QDate>
-class SchedulerData : public QObject
+class SchedulerData : public QObject // main shift object, contains all info that a single shift could contain, is filled with
+        // json data from service via rest client
 {
     Q_OBJECT
 public:

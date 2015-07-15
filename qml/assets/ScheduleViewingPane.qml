@@ -126,17 +126,17 @@ Flickable{
                         }
 
                         Text{
-                            id: nameText
+                            id: firstNameText
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.top: portraitText.bottom
-                            text: qsTr(thisSelectionLoader.loaderModel.name)
+                            text: qsTr(thisSelectionLoader.loaderModel.firstName)
                         }
-//                        Text{
-//                            id: positionText
-//                            anchors.top: nameText.bottom
-//                            anchors.horizontalCenter: parent.horizontalCenter
-//                            text: qsTr(thisSelectionLoader.loaderModel.position)
-//                        }
+                        Text{
+                            id: lastNameText
+                            anchors.top: firstNameText.bottom
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: qsTr(thisSelectionLoader.loaderModel.lastName)
+                        }
                     }
                 }
 
@@ -184,17 +184,17 @@ Flickable{
                         }
 
                         Text{
-                            id: nameText
+                            id: firstNameText
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.top: portrait.bottom
-                            text: qsTr(model.name)
+                            text: qsTr(model.firstName)
                         }
-//                        Text{
-//                            id: positionText
-//                            anchors.top: nameText.bottom
-//                            anchors.horizontalCenter: parent.horizontalCenter
-//                            text: qsTr(model.position)
-//                        }
+                        Text{
+                            id: lastNameText
+                            anchors.top: firstNameText.bottom
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: qsTr(model.lastName)
+                        }
                     }
                 }
             }

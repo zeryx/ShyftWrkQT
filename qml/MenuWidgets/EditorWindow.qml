@@ -50,7 +50,8 @@ Item{
                 root.cachedImageSource = mainWindowContext.m_model.portrait
                 sourceComponent = cachedComponent;
                 active = true;
-                firstNameField.text = mainWindowContext.m_model.name
+                firstNameField.text = mainWindowContext.m_model.firstName
+                lastNameField.text = mainWindowContext.m_model.lastName
                 positionsField.text = mainWindowContext.m_model.position
                 uidField.text = mainWindowContext.m_model.uid
                 uidField.readOnly = true
@@ -141,6 +142,7 @@ Item{
         anchors.topMargin: 15
         anchors.horizontalCenter: lastNameField.horizontalCenter
         width: 300
+        text: ""
         placeholderText: qsTr("Enter shyft id, if applicable.")
         font.family: "abel"
     }
@@ -161,15 +163,7 @@ Item{
         anchors.top: positionsField.bottom
         anchors.horizontalCenter: positionsField.horizontalCenter
         anchors.topMargin: 10
-        property string m_portrait
-        property string m_fname
-        property string m_lname
-        property string m_positions
-        property string m_uid: "" // can be null
         signal modifyPerson
-        onModifyPerson: {
-            mainWindowContext.swapApps("MenuWidgets/MainWindow.qml")
-        }
 
         height:40
         width:100
@@ -187,13 +181,16 @@ Item{
                         imageImportLoader.active === true) // if every major field has stuff
                 {
                     var portraitstr = root.cachedImageSource.replace("http://www.shyftwrk.com", "..")
-                    console.log(portraitstr)
                     masterModel.setJson("first name", firstNameField.text)
                     masterModel.setJson("last name", lastNameField.text)
                     masterModel.setJson("positions", positionsField.text)
                     masterModel.setJson("portrait", portraitstr.toString())
-                    masterModel.setJson("uid", uidField.text);
+                    if(uidField.text !== ""){
+                        console.log(uidField.text)
+                        masterModel.setJson("uid", uidField.text);
+                    }
                     masterModel.setJson("mode", root.mode)
+                    masterModel.triggerMain.connect(mainWindowContext.mainGate) // this is disgusting and needs cleanup
                     acceptButton.modifyPerson.connect(masterModel.alterStaff)
                     acceptButton.modifyPerson()
                 }

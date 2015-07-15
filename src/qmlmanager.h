@@ -1,5 +1,5 @@
-#ifndef INITIALIZE_H
-#define INITIALIZE_H
+#ifndef QMLMANAGER_H
+#define QMLMANAGER_H
 
 #include <QObject>
 #include <QQmlComponent>
@@ -9,16 +9,15 @@
 #include "staffmodel.h"
 #include <QSortFilterProxyModel>
 #include <QList>
-class Initialize : public QObject
+class QmlManager : public QObject // this is essentially a namespace that runs everything at startup and controls everything related to qml
 {
     Q_OBJECT
 public:
-    explicit Initialize(QObject *parent = 0);
+    explicit QmlManager(QObject *parent = 0);
 public:
     QSortFilterProxyModel& proxy();
 
     StaffModel& staff();
-
 
     QList<QObject*>& table();
 
@@ -34,7 +33,7 @@ public:
 
     void configure();
 
-    void start();
+    void start(); // master method, everything else is called from here
 
     bool updateCfgFile(QJsonObject);
 
@@ -48,7 +47,7 @@ public:
 
 
 signals:
-   void loggedInAuth(bool);
+   void loginAuth(bool);
 
 public slots:
 
@@ -57,7 +56,7 @@ public slots:
 private:
     QObject* thisQMLBinding;
 
-    QJsonObject confMap;
+    QJsonObject thisConf;
 
     QSortFilterProxyModel thisProxy;
 
@@ -68,4 +67,4 @@ private:
     QQmlApplicationEngine thisEngine;
 };
 
-#endif // INITIALIZE_H
+#endif // QMLMANAGER_H

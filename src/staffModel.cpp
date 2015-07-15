@@ -27,8 +27,10 @@ QVariant StaffModel::data(const QModelIndex &index, int role) const
     const EmployeeData *data = m_data[index.row()];
     switch(role)
     {
-    case nameRole:
-        return data->name();
+    case firstNameRole:
+        return data->firstName();
+    case lastNameRole:
+        return data->lastName();
     case portraitRole:
         return data->portrait();
     case positionRole:
@@ -47,9 +49,11 @@ bool StaffModel::setData(const QModelIndex &index, QVariant &value, int role)
 
     switch(role)
     {
-    case nameRole:
-        m_data[index.row()]->setName(value.toString());
+    case firstNameRole:
+        m_data[index.row()]->setFirstName(value.toString());
         break;
+    case lastNameRole:
+        m_data[index.row()]->setLastName(value.toString());
     case portraitRole:
         m_data[index.row()]->setPortrait(value.toString());
         break;
@@ -117,7 +121,8 @@ QStringList StaffModel::headerList()
 QHash<int, QByteArray> StaffModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
-    roles[nameRole] = "name";
+    roles[firstNameRole] = "firstName";
+    roles[lastNameRole] = "lastName";
     roles[portraitRole] = "portrait";
     roles[positionRole] = "position";
     roles[uidRole] = "uid";
@@ -138,15 +143,17 @@ void StaffModel::setJson(QString column, QVariant value){
 void StaffModel::alterStaff(){
     if(this->storeStream["mode"].toString() == "new"){
         this->requestStaffChange(new EmployeeData(
-                                     this->storeStream["first name"].toString(),
-                                 this->storeStream["uid"].toString(),
+                this->storeStream["first name"].toString(),
+                this->storeStream["last name"].toString(),
+                this->storeStream["uid"].toString(),
                 this->storeStream["positions"].toString(),
                 this->storeStream["portrait"].toString()), this->restAdd);
     }
     else if(this->storeStream["mode"].toString() == "edit"){
         this->requestStaffChange(new EmployeeData(
-                                     this->storeStream["first name"].toString(),
-                                 this->storeStream["uid"].toString(),
+                this->storeStream["first name"].toString(),
+                this->storeStream["last name"].toString(),
+                this->storeStream["uid"].toString(),
                 this->storeStream["positions"].toString(),
                 this->storeStream["portrait"].toString()), this->restEdit);
     }
@@ -155,7 +162,8 @@ void StaffModel::alterStaff(){
         tmp.setUID(this->storeStream["uid"].toString());
         this->requestStaffChange(&tmp, this->restRemove);
     }
-    this->populate(this->requestDataRefresh());
+    bool chk = this->populate(this->requestDataRefresh()); // this works, I feel like I have way too many methods for this god class
+    emit triggerMain(chk);
 }
 bool StaffModel::populate(QJsonObject stream){
     if(stream["queryCode"] == "failed")
@@ -170,8 +178,11 @@ bool StaffModel::populate(QJsonObject stream){
 
         //append shift data
         for(int j=0; employeeItr["shift data"].toObject().contains("shift"+QString::number(j)); j++){
-            QJsonObject shiftItr = employeeItr["shift data"].toObject()["shift"+QString::number(j)].toObject();
+
+            QJsonObject shiftItr = employeeItr["shift data"].toObject()["shift"+QString::number(j)].toObject(); //for readability
+
             QMap<QString, float> synergy;
+
             for(int k=0; shiftItr["synergy"].toObject().contains("synergy"+QString::number(k)); k++){
 
                 QJsonObject synergyItr = shiftItr["synergy"].toObject()["synergy"+QString::number(k)].toObject();
@@ -181,17 +192,18 @@ bool StaffModel::populate(QJsonObject stream){
             }
             QVariant date(shiftItr["date"]);
             schedTmp.append(new SchedulerData(
-                                date.toDate(),
-                                shiftItr["shift scheduled"].toInt(),
-                            shiftItr["shift id"].toInt(),
+                    date.toDate(),
+                    shiftItr["shift scheduled"].toInt(),
+                    shiftItr["shift id"].toInt(),
                     shiftItr["position scheduled"].toString(),
                     shiftItr["performance"].toDouble(),
                     synergy, this));
         }
         //append employeeData
         employTmp.append(new EmployeeData(
-                             employeeItr["name"].toString(),
-                         employeeItr["uid"].toString(),
+                employeeItr["first name"].toString(),
+                employeeItr["last name"].toString(),
+                employeeItr["uid"].toString(),
                 employeeItr["positions"].toString(),
                 partial.resolved((QUrl)employeeItr["portrait"].toString()),
                 &schedTmp));
@@ -202,13 +214,20 @@ bool StaffModel::populate(QJsonObject stream){
             this->setHeaderData(positions[k]);
         }
     }
-    this->beginInsertRows(QModelIndex(), 0, this->rowCount());
-    this->m_data = employTmp;
-    this->endInsertRows();
+
+    this->beginRemoveRows(QModelIndex(), 0, this->rowCount()); // delete everything first
+    this->m_data.clear();
+    this->endRemoveRows();
+
+    for(int i=0; i<employTmp.count(); i++){
+        beginInsertRows(QModelIndex(), 0, 0);
+        this->m_data.prepend(employTmp.at(i));
+        endInsertRows();
+    }
     return true;
 }
 
-bool StaffModel::loginAndPull(QString username, QString password, QString organisation){
+bool StaffModel::loginAndPull(QString username, QString password, QString organisation){ // this class can move somewhere else
     if(this->requestLogin(username, password, organisation)){
         if(this->populate(this->requestDataRefresh()))
             return true;

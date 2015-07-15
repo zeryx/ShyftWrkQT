@@ -1,10 +1,10 @@
 ﻿#include <QApplication>
 #include <QObject>
-#include <src/initialize.h>
+#include <src/qmlmanager.h>
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);   
-    Initialize shyftinit;
+    QmlManager shyftinit;
     shyftinit.start();
 
     return app.exec();

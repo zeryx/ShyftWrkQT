@@ -9,7 +9,6 @@
 #include "restclient.h"
 class StaffModel : public RestClient
 {
-
 /* this is the base model that interacts with the sql database, all other models mirror their data from here
  * the model is directly used for constructing the ScrollableEmployeeColumn and is masked with a
  *  QSortFilterProxyModel for adaptive search functionality*/
@@ -25,7 +24,8 @@ public:
 
     enum StaffModelDataRole // will add more roles
     {
-        nameRole=Qt::UserRole+1,
+        firstNameRole=Qt::UserRole+1,
+        lastNameRole,
         positionRole,
         portraitRole,
         uidRole
@@ -72,7 +72,7 @@ public slots:
 
 
 signals:
-
+    void triggerMain(bool);
     void nameChanged(QString& newname);
 
 protected:

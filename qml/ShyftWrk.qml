@@ -57,11 +57,10 @@ ApplicationWindow{
         anchors.right: searchLoader.left
         anchors.top: banner.bottom
         signal authRequested()
-        function loginAuth(bool, fail){
+        function mainGate(bool){
             if(bool)
                 swapApps("MenuWidgets/MainWindow.qml")
-            else
-                mainLoader.item.failMessage(fail)
+
         }
         property var m_model
         anchors{

@@ -5,7 +5,7 @@ import "assets" as MyAssets
 Column{
     id:rootColumn
     property alias listView: myListView
-    Component.onCompleted: initialize.windowChange();
+    Component.onCompleted: QmlManager.windowChange();
     z:-1
     MyAssets.Search{
         id: columnSearch
@@ -130,7 +130,7 @@ Column{
 
             Text{
                 id: nameText
-                text:{ qsTr(model.name)}
+                text:{ qsTr(model.firstName)}
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: portrait.bottom
             }

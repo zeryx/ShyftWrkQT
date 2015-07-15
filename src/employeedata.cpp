@@ -4,12 +4,13 @@ EmployeeData::EmployeeData()
 {
 }
 
-EmployeeData::EmployeeData(const QString &name, const QString &uid,
+EmployeeData::EmployeeData(const QString &firstName,const QString &lastName, const QString &uid,
                            const QString &position, const QUrl &portrait, const QList<SchedulerData*> *schedulerData,
                            QObject *parent):
 QObject(parent){
     this->setPortrait(portrait);
-    this->setName(name);
+    this->setFirstName(firstName);
+    this->setLastName(lastName);
     this->setPositions(position);
     this->setUID(uid);
     this->setSchedulerData(*schedulerData);
@@ -20,8 +21,12 @@ QUrl EmployeeData::portrait() const{
     return thisPortrait;
 }
 
-QString EmployeeData::name() const{
-    return thisName;
+QString EmployeeData::firstName() const{
+    return thisFirstName;
+}
+
+QString EmployeeData::lastName() const{
+    return thisLastName;
 }
 
 QString EmployeeData::positions() const{
@@ -90,10 +95,17 @@ void EmployeeData::setPortrait(QUrl portrait){
     }
 }
 
-void EmployeeData::setName(QString name){
-    if(thisName != name){
-        thisName = name;
-        emit nameChanged();
+void EmployeeData::setFirstName(QString name){
+    if(thisFirstName != name){
+        thisFirstName = name;
+        emit firstNameChanged();
+    }
+}
+
+void EmployeeData::setLastName(QString name){
+    if(thisLastName != name){
+        thisLastName = name;
+        emit lastNameChanged();
     }
 }
 
