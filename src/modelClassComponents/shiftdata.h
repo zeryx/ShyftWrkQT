@@ -1,17 +1,17 @@
-#ifndef SCHEDULERDATA_H
-#define SCHEDULERDATA_H
+#ifndef SHIFTDATA_H
+#define SHIFTDATA_H
 
 #include <QObject>
 #include <QMap>
 #include <QDate>
-class SchedulerData : public QObject // main shift object, contains all info that a single shift could contain, is filled with
+class ShiftData : public QObject // main shift object, contains all info that a single shift could contain, is filled with
         // json data from service via rest client
 {
     Q_OBJECT
 public:
-    explicit SchedulerData(QObject *parent = 0);
+    explicit ShiftData(QObject *parent = 0);
 
-    explicit SchedulerData(QDate newDate, int newShiftScheduled, int newShiftID, QString newPositionScheduled, double newPerformance, QMap<QString, float> newSynergy, QObject *parent=0);
+    explicit ShiftData(QDate newDate, int newShiftScheduled, int newShiftID, QString newPositionScheduled, double newPerformance, QMap<QString, float> newSynergy, QObject *parent=0);
 
 public: // gets
 
@@ -61,12 +61,12 @@ signals:
 
 protected:
 
-    int thisShiftScheduled;
-    int thisShiftID;
-    double thisPerformance;
-    QDate thisDate;
-    QString thisPositionScheduled;
-    QMap<QString, float> thisSynergy;
+    int _shiftScheduled;
+    int _shiftID;
+    double _performance;
+    QDate _date;
+    QString _positionScheduled;
+    QMap<QString, float> _synergy;
 };
 
-#endif // SCHEDULERDATA_H
+#endif // SHIFTDATA_H

@@ -57,8 +57,8 @@ ApplicationWindow{
         anchors.right: searchLoader.left
         anchors.top: banner.bottom
         signal authRequested()
-        function mainGate(bool){
-            if(bool)
+        function mainGate(bool, string){
+            if(bool && string === "login")
                 swapApps("MenuWidgets/MainWindow.qml")
 
         }

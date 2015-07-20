@@ -1,20 +1,15 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/ScrollableEmployeeColumn.qml</file>
-        <file>qml/ShiftScheduler.qml</file>
         <file>qml/ShyftWrk.qml</file>
         <file>qml/assets/Clickable.qml</file>
         <file>qml/assets/Search.qml</file>
         <file>qml/assets/searchbox.jpg</file>
-        <file>qml/assets/ScheduleViewingPane.qml</file>
-        <file>qml/assets/Calendar.qml</file>
-        <file>qml/assets/EmployeeAAG.qml</file>
         <file>qml/assets/ScrollBar.qml</file>
         <file>qml/MenuWidgets/LoginWindow.qml</file>
         <file>qml/MenuWidgets/MainWindow.qml</file>
         <file>qml/MenuWidgets/EditorWindow.qml</file>
-        <file>qml/MenuWidgets/ViewerWindow.qml</file>
-        <file>qml/assets/icons/close_button.zvg</file>
         <file>qml/assets/icons/user-add-512px.svg</file>
+        <file>qml/StaffGraph.qml</file>
     </qresource>
 </RCC>

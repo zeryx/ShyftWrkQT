@@ -3,8 +3,8 @@ import "../"
 Item {
     id: mainAppRoot
     opacity: 0
-    ShiftScheduler {
-        id:myShiftScheduler
+    StaffGraph {
+        id:staffGraph
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.left: parent.left

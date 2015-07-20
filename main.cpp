@@ -1,11 +1,14 @@
 ﻿#include <QApplication>
 #include <QObject>
-#include <src/qmlmanager.h>
+#include <QQmlApplicationEngine>
+#include <src/manager.h>
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);   
-    QmlManager shyftinit;
-    shyftinit.start();
+    QQmlApplicationEngine engine;
+    engine.addImportPath(QStringLiteral("../ShyftWrkQT/qml"));
+    Manager *management = new Manager(&engine);
+
 
     return app.exec();
 }

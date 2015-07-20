@@ -5,7 +5,6 @@ import "assets" as MyAssets
 Column{
     id:rootColumn
     property alias listView: myListView
-    Component.onCompleted: QmlManager.windowChange();
     z:-1
     MyAssets.Search{
         id: columnSearch

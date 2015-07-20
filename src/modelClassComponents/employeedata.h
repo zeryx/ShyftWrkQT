@@ -4,7 +4,7 @@
 #include <QUrl>
 #include <QDebug>
 #include <QVariant>
-#include "schedulerdata.h"
+#include "shiftdata.h"
 class EmployeeData : public QObject // the staff data object class, contains all info about a staff member, contains
         // a subclass of scheduler data in a QList.
 {
@@ -14,7 +14,7 @@ public: //-- gets
     EmployeeData();
 
     EmployeeData( const QString &first_name, const QString &last_name, const QString &uid, const QString &positions,
-                  const QUrl &portrait, const QList<SchedulerData*> *schedulerData =  new QList<SchedulerData*>, QObject* parent =0);
+                  const QUrl &portrait, QList<ShiftData*> *shiftData =  new QList<ShiftData*>, QObject* parent =0);
 
     QUrl portrait()const;
 
@@ -34,7 +34,7 @@ public: //-- gets
 
     QMap<QDate, QMap<QString, float> > getSynergy()const;
 
-    SchedulerData* getScheduleFor(QDate &date)const;
+    ShiftData* getScheduleFor(QDate &date)const;
 
 public: //-- sets
 
@@ -56,10 +56,15 @@ public: //-- sets
 
     void setSynergy(QMap<QString, float>& newSynergy, QDate& date);
 
-    void setSchedulerData(QList<SchedulerData*> list);
+    void setShiftData(QList<ShiftData*> &list);
 
-    void setSchedulerData(QDate& date, int& shiftScheduled, int& shiftID,
+    void setShiftData(QDate& date, int& shiftScheduled, int& shiftID,
                           QString& positionScheduled, double& performance, QMap<QString, float>& Synergy);
+
+public: // menu request methods
+    QMap<QString, QVariant> convertSynergyMap(QDate &beginDate, QDate &endDate); // the QVariants contains a QMap<QString, QMap<QString, QVariant>> combo
+
+    QVariant avgPerformance(QDate &beginDate, QDate &endDate);
 
 signals:
 
@@ -78,12 +83,12 @@ signals:
 
 protected:
 
-    QUrl thisPortrait;
-    QString thisUID;
-    QString thisFirstName;
-    QString thisLastName;
-    QString thisPositions;
-    QList<SchedulerData*> thisSchedulerData;
+    QUrl _portrait;
+    QString _uID;
+    QString _firstName;
+    QString _lastName;
+    QString _positions;
+    QList<ShiftData*> _shiftData;
 };
 
 #endif // EMPLOYEEDATA_H

@@ -8,10 +8,10 @@ Item{
     function inputFinished(){
         if(usernameInputField.text.length >0 && passwordInputField.text.length >0 && organisationInputField.text.length >0)
         {
-            QmlManager.setJsonConfig("username", usernameInputField.text)
-            QmlManager.setJsonConfig("password", passwordInputField.text)
-            QmlManager.setJsonConfig("organisation", organisationInputField.text)
-            QmlManager.loginAuth.connect(mainWindowContext.mainGate)
+            Manager.store("username", usernameInputField.text)
+            Manager.store("password", passwordInputField.text)
+            Manager.store("organisation", organisationInputField.text)
+            Manager.genericSignal.connect(mainWindowContext.mainGate)
             mainWindowContext.authRequested()
         }
     }
@@ -49,7 +49,7 @@ Item{
                 z:-1
             }
             Component.onCompleted: {
-                text = QmlManager.getJsonConfig("organisation")
+                text = Manager.retrieve("organisation")
             }
         }
     }
@@ -86,7 +86,7 @@ Item{
                 z: -1
             }
             Component.onCompleted: {
-                text = QmlManager.getJsonConfig("username")
+                text = Manager.retrieve("username")
             }
         }
     }
@@ -128,7 +128,7 @@ Item{
                 z: -1
             }
             Component.onCompleted: {
-                text = QmlManager.getJsonConfig("password")
+                text = Manager.retrieve("password")
             }
         }
     }

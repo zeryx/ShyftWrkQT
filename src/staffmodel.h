@@ -5,9 +5,8 @@
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
 #include <QMap>
-#include "employeedata.h"
-#include "restclient.h"
-class StaffModel : public RestClient
+#include "src/modelClassComponents/employeedata.h"
+class StaffModel : public QAbstractListModel
 {
 /* this is the base model that interacts with the sql database, all other models mirror their data from here
  * the model is directly used for constructing the ScrollableEmployeeColumn and is masked with a
@@ -43,7 +42,6 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation = Qt::Horizontal, int role = Qt::DisplayRole) const;
 
-    bool loginAndPull(QString username, QString password, QString organisation);
 public:
     EmployeeData* getPerson(size_t index);
 
@@ -53,17 +51,13 @@ public:
 
     QStringList headerList();
 
-    const_iterator begin()const{return m_data.begin();}
+    const_iterator begin()const{return _data.begin();}
 
-    const_iterator end()const{return m_data.end();}
-
-    void setQmlBinding(QObject*);
+    const_iterator end()const{return _data.end();}
 
     bool populate(QJsonObject);
-public: // things that get called from qml
-    Q_INVOKABLE void alterStaff();
 
-    Q_INVOKABLE void setJson(QString, QVariant);
+public: // things that get called from qml
 
 
 public slots:
@@ -71,19 +65,14 @@ public slots:
     void setHeaderDataSlot(const QString &value);
 
 
-signals:
-    void triggerMain(bool);
-    void nameChanged(QString& newname);
-
 protected:
 
     QHash<int, QByteArray> roleNames() const;
 
-    QHash<qint32, QString> headers;
-    QJsonObject storeStream;
+    QHash<qint32, QString> _Headers;
 public:
 
-    QList<EmployeeData*> m_data;
+    QList<EmployeeData*> _data;
 
 
 

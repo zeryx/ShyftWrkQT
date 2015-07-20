@@ -9,11 +9,17 @@ macx:CONFIG -= app_bundle
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    src/employeedata.cpp \
-    src/schedulerdata.cpp \
-    src/restclient.cpp \
     src/staffModel.cpp \
-    src/qmlmanager.cpp
+    src/modelClassComponents/employeedata.cpp \
+    src/RESTful/staffrest.cpp \
+    src/RESTful/rest.cpp \
+    src/Files/configurationmanager.cpp \
+    src/Files/abstract_FileManager.cpp \
+    src/qmlnegotiator.cpp \
+    src/manager.cpp \
+    src/menuconstructor.cpp \
+    src/shyftmenu.cpp \
+    src/modelClassComponents/shiftdata.cpp
 
 RESOURCES += qml.qrc
 
@@ -25,9 +31,18 @@ include(deployment.pri)
 QTPLUGIN += QSQLMYSQL
 
 HEADERS += \
-    src/employeedata.h \
-    src/schedulerdata.h \
-    src/restclient.h \
     src/staffmodel.h \
-    src/qmlmanager.h
+    src/modelClassComponents/employeedata.h \
+    src/RESTful/staffrest.h \
+    src/RESTful/rest.h \
+    src/Files/configurationmanager.h \
+    src/Files/abstract_FileManager.h \
+    src/qmlnegotiator.h \
+    src/manager.h \
+    src/menuconstructor.h \
+    src/shyftmenu.h \
+    src/modelClassComponents/shiftdata.h
+
 QMAKE_CXXFLAGS += -g
+
+OTHER_FILES +=
